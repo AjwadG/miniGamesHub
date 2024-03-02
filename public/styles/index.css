@@ -22,6 +22,12 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
   }
+
+  #Wordle {
+    background-image: url("../images/Wordle.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
   
   .btn {
     margin: 20px;
