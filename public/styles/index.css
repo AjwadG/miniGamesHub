@@ -1,0 +1,41 @@
+body {
+    text-align: center;
+    background-color: #bbc4cb;
+  }
+  
+  #level-title, #HighScore{
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2.5rem;
+    margin:  5%;
+    color: #001b38;
+  }
+  
+  .container {
+    display: block;
+    width: 50%;
+    margin: auto;
+  
+  }
+
+  #SimonGame {
+    background-image: url("../images/SimonGame.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  
+  .btn {
+    margin: 20px;
+    display: inline-block;
+    height: 170px;
+    width: 170px;
+    border: 8px solid #153254;
+    background-color: #e1e8ed;
+    border-radius: 20%;
+  }
+  
+  .btn:hover {
+    box-shadow: 0 0 20px white;
+    border: 8px solid #1c426e;
+    background-color: grey;
+  }
+  
