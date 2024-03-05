@@ -61,6 +61,15 @@ app.post('/Wordle_:wordLenght', (req, res) => {
     res.send(data);
 })
 
+app.get('/Trivia', (req, res) => {
+    res.render('games/Trivia/home.ejs');
+})
+app.post('/Trivia', (req, res) => {
+    const { category, difficulty, type, token } = req.body
+
+    res.render('games/Trivia/game.ejs', { category, difficulty, type, token });
+})
+
 
 app.get('*', (req, res) => {
     res.redirect('/')

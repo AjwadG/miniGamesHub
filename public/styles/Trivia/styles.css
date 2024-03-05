@@ -1,0 +1,135 @@
+/* https://colorhunt.co/palette/ffffecf1e4c3c6a969597e52 */
+body {
+    background-color: #FFFFEC;
+    box-sizing: border-box;
+}
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 95vb;
+    text-align: center;
+}
+
+.formRaber {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    background: #F1E4C3;
+    border-radius: 15px;
+    padding: 30px 60px;
+    min-width: 200px;
+    max-width: 100%;
+}
+
+.formRaber > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+}
+.GameName {
+    color: #597E52;
+    font-size: 35px;
+    font-weight: bold;
+}
+.Title {
+    color: #C6A969;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+select {
+    display: block;
+    width: 100%;
+    height: 45px;
+    padding: 10px 15px;
+    font-size: 15px;
+    line-height: 1.42857143;
+    color: #597E52;
+    background-color: #ffffff;
+    background-image: none;
+    border: 1px solid #C6A969;
+    border-radius: 4px;
+}
+
+#submit{
+    padding: 10px 20px;
+    font-size: 15px;
+    background-color: #597E52;
+    border: 1px solid #FFFFEC;
+    border-radius: 15px;
+    color: #FFFFEC;
+    cursor: pointer;
+    transition-duration: 0.2s;
+}
+
+#submit:hover{
+    padding: 10px 25px;
+    background-color: #FFFFEC;
+    color: #597E52;
+    border-color: #C6A969;
+}
+#submit:active{
+    background-color: #597E52;
+    color: #FFFFEC;
+    border-color: #FFFFEC;
+}
+
+.options {
+    width: 100%;
+    display: flex;
+    margin-top: 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.option {
+    display: inline-block;
+    width: 40%;
+    min-height: 45px;
+    padding: 10px 15px;
+    font-size: 25px;
+    font-weight: bold;
+    line-height: 1.42857143;
+    color: #597E52;
+    background-color: #ffffff;
+    border: 1px solid #C6A969;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.option:hover {
+    border-color: #597E52;
+    padding: 10px 17px;
+}
+
+.correct {
+    background-color: #597E52;
+    color: #F1E4C3;
+    transition: 0.4s;
+}
+
+.wrong {
+    background-color: rgb(255, 25, 0);
+    color: #F1E4C3;
+    transition: 0.4s;
+}
+
+.score {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    color: #597E52;
+    font-size: 25px;
+    font-weight: bold;
+}

@@ -28,6 +28,12 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
   }
+
+  #Trivia {
+    background-image: url("../images/Trivia.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
   
   .btn {
     margin: 20px;
