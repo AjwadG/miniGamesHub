@@ -1,0 +1,61 @@
+body {
+    background-color: antiquewhite;
+    height: 95vh;
+    width: 100vw;
+    overflow: hidden;
+
+}
+* {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#bird {
+    position: absolute;
+    background-image: url(../../images/FlappyBird/2.png);
+    height:  50px;
+    background-repeat: no-repeat;
+    background-size:contain;
+    width: 68px;
+    animation: 1s;
+    left: calc(50% - 34px);
+    top: calc(50% - 25px);
+    z-index: 100;
+}
+
+.bird1 {
+    background-image: url(../../images/FlappyBird/1.png) !important;
+}
+
+.pipe_bottom {
+    position: absolute;
+}
+
+.pipe_top {
+    position: absolute;
+    transform: rotate(180deg);
+}
+
+
+#level-title{
+    display: inline-block;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 4rem;
+    color: white;
+}
+
+#HighScore {
+    position: absolute;
+    font-size: 1.5rem;
+    color: brown;
+    left: 5;
+    top: 5;
+
+}

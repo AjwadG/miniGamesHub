@@ -14,10 +14,12 @@ app.use(express.static('public'));
 
 
 app.get('/', (req, res) => {
+    console.log(req.originalUrl);
     res.render('index.ejs');
 })
 
 app.get('/SimonGame', (req, res) => {
+    console.log(req.originalUrl);
     res.render('games/SimonGame.ejs');
 })
 
@@ -25,10 +27,12 @@ app.post('/SimonGame', (req, res) => {
     res.send(req.body);
 })
 app.get('/Wordle', (req, res) => {
+    console.log(req.originalUrl);
     res.render('games/Wordle/home.ejs');
 })
 
 app.get('/Wordle_:wordLenght', (req, res) => {
+    console.log(req.originalUrl);
     const wordLenght = Number(req.params.wordLenght);
     if (!wordLenght || wordLenght < 5 || wordLenght > 8)
         return res.send({})
@@ -62,14 +66,19 @@ app.post('/Wordle_:wordLenght', (req, res) => {
 })
 
 app.get('/Trivia', (req, res) => {
+    console.log(req.originalUrl);
     res.render('games/Trivia/home.ejs');
 })
 app.post('/Trivia', (req, res) => {
     const { category, difficulty, type, token } = req.body
-
+    
     res.render('games/Trivia/game.ejs', { category, difficulty, type, token });
 })
 
+app.get('/FlappyBird', (req, res) => {
+    console.log(req.originalUrl);
+    res.render('games/FlappyBird/home.ejs', {})
+})
 
 app.get('*', (req, res) => {
     res.redirect('/')

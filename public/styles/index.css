@@ -35,6 +35,12 @@ body {
     background-repeat: no-repeat;
   }
   
+  #FlappyBird {
+    background-image: url("../images/FlappyBird/2.png");
+    background-position: 50% 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
   .btn {
     margin: 20px;
     display: inline-block;
