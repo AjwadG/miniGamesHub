@@ -56,4 +56,22 @@ body {
     border: 8px solid #1c426e;
     background-color: grey;
   }
+
+  #chat {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    width: 100px;
+    height: 100px;
+    background-image: url(../images/chat.png);
+    background-position: 50% 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: 0.4s;
+  }
+
+  #chat:hover {
+    width: 105px;
+    height: 105px;
+  }
   

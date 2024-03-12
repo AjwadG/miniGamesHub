@@ -1,12 +1,17 @@
 import 'dotenv/config'
 import express from "express";
 import bodyParser from "body-parser";
+import { Server } from 'socket.io';
+import { createServer } from 'http';
 import fs from "fs";
 import { dirname }  from "path";
 import { fileURLToPath } from "url";
+import { Socket } from 'dgram';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
+const server = createServer(app); 
+const io = new Server(server);
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,12 +19,10 @@ app.use(express.static('public'));
 
 
 app.get('/', (req, res) => {
-    console.log(req.originalUrl);
     res.render('index.ejs');
 })
 
 app.get('/SimonGame', (req, res) => {
-    console.log(req.originalUrl);
     res.render('games/SimonGame.ejs');
 })
 
@@ -27,12 +30,11 @@ app.post('/SimonGame', (req, res) => {
     res.send(req.body);
 })
 app.get('/Wordle', (req, res) => {
-    console.log(req.originalUrl);
+    // console.log(req.originalUrl);
     res.render('games/Wordle/home.ejs');
 })
 
 app.get('/Wordle_:wordLenght', (req, res) => {
-    console.log(req.originalUrl);
     const wordLenght = Number(req.params.wordLenght);
     if (!wordLenght || wordLenght < 5 || wordLenght > 8)
         return res.send({})
@@ -66,7 +68,6 @@ app.post('/Wordle_:wordLenght', (req, res) => {
 })
 
 app.get('/Trivia', (req, res) => {
-    console.log(req.originalUrl);
     res.render('games/Trivia/home.ejs');
 })
 app.post('/Trivia', (req, res) => {
@@ -76,14 +77,29 @@ app.post('/Trivia', (req, res) => {
 })
 
 app.get('/FlappyBird', (req, res) => {
-    console.log(req.originalUrl);
     res.render('games/FlappyBird/home.ejs', {})
+})
+
+app.get('/chat', (req, res) => {
+    res.render('Chat/home.ejs')
+})
+app.post('/chat', (req, res) => {
+    res.render('Chat/chat.ejs', { name: req.body.name})
 })
 
 app.get('*', (req, res) => {
     res.redirect('/')
 })
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
     console.log(`Server started on port ${process.env.PORT}`);
+})
+
+io.on('connection', socket => {
+    console.log(socket.id);
+
+    socket.on('message', (name, message) => {
+        console.log(`${name}: ${message}`);
+        socket.broadcast.emit("message", {name, message})
+    })
 })

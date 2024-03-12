@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <title>Global Chat</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 95vh;
+        }
+        div, button {
+            padding: 10px;
+        }
+        #chatBox {
+            min-width: 400px;
+            max-width: 80%;
+            border: 2px solid black;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        #chat {
+            height: 400px;
+            border: 1px solid black;
+            border-radius: 15px;
+            margin-bottom: 5px;
+            background-color: azure;
+            overflow: auto;
+        }
+        #text {
+            width: 75%;
+            border-radius: 15px;
+            height: 30px;
+            padding: 5px;
+        }
+        button {
+            width: 20%;
+            font-size: 15px;
+            border-radius: 15px;
+            margin-left: 3px;
+        }
+        .in {
+            background-color: rgb(147, 227, 239);
+            border-radius: 5px;
+            margin-bottom: 2px;
+            font-size: 20px;
+        }
+        .out {
+            background-color: rgb(153, 147, 239);
+            border-radius: 5px;
+            margin-bottom: 2px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body name="<%= name %>">
+    
+    <div id="chatBox">
+        <div id="chat">
+
+        </div>
+        <input type="text" id="text">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const socket = io(window.location.origin)
+        const name = document.querySelector('body').getAttribute('name')
+        socket.on('connection', () => {
+            socket.emit('message', "water")
+        })
+
+        function sendMessage() {
+            const message = document.getElementById('text').value
+            if (message == '') {
+                return
+            }
+            const div = document.createElement("div")
+            div.innerHTML = `<b>YOU</b> : ${message}`
+            div.classList.add("out");
+            document.getElementById('chat').appendChild(div)
+
+            document.getElementById('text').value = ''
+            console.log(message);
+            socket.emit('message', name, message)
+        }
+        socket.on('message', (data) => {
+            const div = document.createElement("div")
+            div.innerHTML = `<b>${data.name}</b> : ${data.message}`
+            div.classList.add("in");
+            document.getElementById('chat').appendChild(div)
+        })
+    </script>
+</body>
+</html>
