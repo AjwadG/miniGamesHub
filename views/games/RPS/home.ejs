@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Rock Papper Cissors</title>
+  <link rel="stylesheet" href="styles\Trivia\styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+</head>
+
+<body>
+    <div class="mainContainer">
+        <div class="formRaber">
+            <span class="GameName">Rock Papper Cissors</span>
+            <span class="Title">Select Questions type</span>
+            <form action="/Trivia" method="post">
+                <select id="category" name="category">
+                    <option value="" > Loading ... </option>
+                </select>
+
+                <select id="difficulty" name="difficulty">
+                    <option value="" >Any Difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+
+                <select id="type" name="type">  
+                    <option value="" >Any Type</option>
+                    <option value="multiple">Multiple Choice</option>
+                    <option value="boolean">True / False</option>
+                </select>
+                <input type="text" hidden id="token" name="token" value=" ">
+                <span id="submit">Start</button>
+            </form>
+        </div>
+    </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="scripts\Trivia\index.js"></script>
+</body>
+
+</html>

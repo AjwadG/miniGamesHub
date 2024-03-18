@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Trivia Quiz Game</title>
+    <link rel="stylesheet" href="styles\RPS\styles.css" />
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="mainContainer">
+      <div class="header">
+        <h1 class="GameName">Rock Paper Cissor</h1>
+        <h2 class="Title">Select one</h2>
+      </div>
+      <div class="main">
+        <div class="rock" id="player1"></div>
+        <div id="vs"></div>
+        <div class="cissor" id="player2"></div>
+      </div>
+      <div class="fotter">
+        <div class="hand" id="rock"></div>
+        <div class="hand" id="paper"></div>
+        <div class="hand" id="cissor"></div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="scripts\RPS\game.js"></script>
+  </body>
+</html>

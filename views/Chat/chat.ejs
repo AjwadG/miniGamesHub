@@ -31,7 +31,7 @@
             overflow: auto;
         }
         #text {
-            width: 75%;
+            width: 72%;
             border-radius: 15px;
             height: 30px;
             padding: 5px;
@@ -69,8 +69,8 @@
     <script>
         const socket = io(window.location.origin)
         const name = document.querySelector('body').getAttribute('name')
-        socket.on('connection', () => {
-            socket.emit('message', "water")
+        socket.on('connect', () => {
+            console.log('connection was made with id ' + socket.id);
         })
 
         function sendMessage() {
@@ -84,7 +84,6 @@
             document.getElementById('chat').appendChild(div)
 
             document.getElementById('text').value = ''
-            console.log(message);
             socket.emit('message', name, message)
         }
         socket.on('message', (data) => {

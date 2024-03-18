@@ -1,0 +1,236 @@
+/* https://colorhunt.co/palette/ffffecf1e4c3c6a969597e52 */
+body {
+  background-color: #ffffec;
+  box-sizing: border-box;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 95vb;
+}
+
+.header {
+  text-align: center;
+}
+
+.GameName {
+  color: #597e52;
+  margin: 10px auto 0;
+  font-size: 40px;
+  font-weight: bold;
+}
+.Title {
+  color: #c6a969;
+  margin: 10px auto 0;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.main {
+  height: 300px !important;
+  width: 85% !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fotter {
+  width: 340px !important;
+  background: none !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.hand {
+  width: 100px;
+  height: 100px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#player1 {
+  height: 100%;
+  width: 400px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: relative;
+  transition-duration: 0.2s;
+  animation: endless1 4s linear infinite;
+}
+
+.rock {
+  background-image: url("../../images/RPS/rock.png") !important;
+}
+.paper {
+  background-image: url("../../images/RPS/paper.png") !important;
+}
+.cissor {
+  background-image: url("../../images/RPS/cissor.png?1") !important;
+}
+
+#player2 {
+  height: 100%;
+  width: 400px;
+  position: relative;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: scaleX(-1);
+  transition-duration: 0.1s;
+  animation: endless2 4s linear infinite;
+}
+
+#vs {
+  width: 100px;
+  height: 250px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("../../images/RPS/vs.png");
+}
+
+#rock {
+  background-image: url("../../images/RPS/rock_logo.png");
+}
+
+#paper {
+  background-image: url("../../images/RPS/paper_logo.png");
+}
+
+#cissor {
+  background-image: url("../../images/RPS/cissor_logo.png");
+}
+
+select {
+  display: block;
+  width: 100%;
+  height: 45px;
+  padding: 10px 15px;
+  font-size: 15px;
+  line-height: 1.42857143;
+  color: #597e52;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #c6a969;
+  border-radius: 4px;
+}
+
+#submit {
+  padding: 10px 20px;
+  font-size: 15px;
+  background-color: #597e52;
+  border: 1px solid #ffffec;
+  border-radius: 15px;
+  color: #ffffec;
+  cursor: pointer;
+  transition-duration: 0.2s;
+}
+
+#submit:hover {
+  padding: 10px 25px;
+  background-color: #ffffec;
+  color: #597e52;
+  border-color: #c6a969;
+}
+#submit:active {
+  background-color: #597e52;
+  color: #ffffec;
+  border-color: #ffffec;
+}
+
+.options {
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.option {
+  display: inline-block;
+  width: 40%;
+  min-height: 45px;
+  padding: 10px 15px;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 1.42857143;
+  color: #597e52;
+  background-color: #ffffff;
+  border: 1px solid #c6a969;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.option:hover {
+  border-color: #597e52;
+  padding: 10px 17px;
+}
+
+.correct {
+  background-color: #597e52;
+  color: #f1e4c3;
+  transition: 0.4s;
+}
+
+.back-1 {
+  background-color: red;
+  opacity: 0.8;
+}
+
+.back1 {
+  background-color: green;
+  opacity: 0.8;
+}
+.back0 {
+  background-color: skyblue;
+  opacity: 0.8;
+}
+
+.score {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  color: #597e52;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+@keyframes endless1 {
+  0% {
+    top: -40px;
+    transform: rotate(0deg);
+  }
+  50% {
+    top: 40px;
+    transform: rotate(10deg);
+  }
+  100% {
+    top: -40px;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes endless2 {
+  0% {
+    top: 40px;
+    transform: rotate(0deg) scaleX(-1);
+  }
+  50% {
+    top: -40px;
+    transform: rotate(10deg) scaleX(-1);
+  }
+  100% {
+    top: 40px;
+    transform: rotate(0deg) scaleX(-1);
+  }
+}

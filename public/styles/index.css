@@ -41,6 +41,13 @@ body {
     background-size: contain;
     background-repeat: no-repeat;
   }
+
+  #RPS {
+    background-image: url("../images/RPS.png");
+    background-position: 50% 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
   .btn {
     margin: 20px;
     display: inline-block;
