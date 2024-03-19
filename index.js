@@ -6,8 +6,7 @@ import { createServer } from "http";
 import fs from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { Socket } from "dgram";
-import { log } from "console";
+import { v4 as uuidv4 } from "uuid";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
@@ -93,10 +92,6 @@ app.get("/RPS", (req, res) => {
   res.render("games/RPS/game.ejs");
 });
 
-// app.post('/RPS', (req, res) => {
-//     res.render('games/RPS/game.ejs', { single: req.body.single})
-// })
-
 app.get("*", (req, res) => {
   res.redirect("/");
 });
@@ -104,6 +99,22 @@ app.get("*", (req, res) => {
 server.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });
+
+const RPS = io.of("/RPS");
+RPS.on("connection", (socket) => {
+  console.log(socket.client.server.engine.clientsCount);
+  socket.on("join_RPS", (id, callBack) => {
+    id = id ? id : uuidv4();
+    socket.join(id);
+    socket.to(id).emit("joined");
+    callBack(id);
+  });
+
+  socket.on("RPS_pick", (pick, gameID) => {
+    socket.to(gameID).emit("RPS_pick", pick, gameID);
+  });
+});
+
 io.on("connection", (socket) => {
   console.log(socket.client.server.engine.clientsCount);
   console.log(socket.id);

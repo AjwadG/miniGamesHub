@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" mode="pve">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Trivia Quiz Game</title>
+    <title>Rock Paper Scissors</title>
     <link rel="stylesheet" href="styles\RPS\styles.css" />
     <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
     <link
@@ -16,8 +16,12 @@
   <body>
     <div class="mainContainer">
       <div class="header">
-        <h1 class="GameName">Rock Paper Cissor</h1>
-        <h2 class="Title">Select one</h2>
+        <h3 class="player_info" id="player1_info">YOU: picking</h3>
+        <div>
+          <h1 class="GameName">Rock Paper Scissors</h1>
+          <h2 class="Title">Select one</h2>
+        </div>
+        <h3 class="player_info" id="player2_info">Player2: picking</h3>
       </div>
       <div class="main">
         <div class="rock" id="player1"></div>
@@ -28,6 +32,10 @@
         <div class="hand" id="rock"></div>
         <div class="hand" id="paper"></div>
         <div class="hand" id="cissor"></div>
+      </div>
+      <div class="Game_ID">
+        Game ID: <span id="ID"><button>Create Game</button></span>
+        <button onclick="join()">Join game</button>
       </div>
     </div>
 
