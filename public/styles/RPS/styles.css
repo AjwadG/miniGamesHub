@@ -9,7 +9,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  min-height: 95vb;
+  min-height: 93vb;
 }
 
 .header {
@@ -21,8 +21,10 @@ body {
   text-align: center;
 }
 .Game_ID {
-  position: absolute;
-  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
 }
 
 .player_info {

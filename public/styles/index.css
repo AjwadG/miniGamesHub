@@ -1,84 +1,91 @@
 body {
-    text-align: center;
-    background-color: #bbc4cb;
-  }
-  
-  #level-title, #HighScore{
-    font-family: 'Press Start 2P', cursive;
-    font-size: 2.5rem;
-    margin:  5%;
-    color: #001b38;
-  }
-  
-  .container {
-    display: block;
-    width: 50%;
-    margin: auto;
-  
-  }
+  text-align: center;
+  background-color: #bbc4cb;
+}
 
-  #SimonGame {
-    background-image: url("../images/SimonGame.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
+#level-title,
+#HighScore {
+  font-family: "Press Start 2P", cursive;
+  font-size: 2.5rem;
+  margin: 5%;
+  color: #001b38;
+}
 
-  #Wordle {
-    background-image: url("../images/Wordle.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
+.container {
+  display: block;
+  max-width: 900px;
+  margin: auto;
+}
 
-  #Trivia {
-    background-image: url("../images/Trivia.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
-  
-  #FlappyBird {
-    background-image: url("../images/FlappyBird/2.png");
-    background-position: 50% 50%;
-    background-size: contain;
-    background-repeat: no-repeat;
-  }
+#SimonGame {
+  background-image: url("../images/SimonGame.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 
-  #RPS {
-    background-image: url("../images/RPS.png");
-    background-position: 50% 50%;
-    background-size: contain;
-    background-repeat: no-repeat;
-  }
-  .btn {
-    margin: 20px;
-    display: inline-block;
-    height: 170px;
-    width: 170px;
-    border: 8px solid #153254;
-    background-color: #e1e8ed;
-    border-radius: 20%;
-  }
-  
-  .btn:hover {
-    box-shadow: 0 0 20px white;
-    border: 8px solid #1c426e;
-    background-color: grey;
-  }
+#Wordle {
+  background-image: url("../images/Wordle.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 
-  #chat {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-    width: 100px;
-    height: 100px;
-    background-image: url(../images/chat.png);
-    background-position: 50% 50%;
-    background-size: contain;
-    background-repeat: no-repeat;
-    transition: 0.4s;
-  }
+#Trivia {
+  background-image: url("../images/Trivia.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 
-  #chat:hover {
-    width: 105px;
-    height: 105px;
-  }
-  
+#FlappyBird {
+  background-image: url("../images/FlappyBird/2.png");
+  background-position: 50% 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#RPS {
+  background-image: url("../images/RPS.png");
+  background-position: 50% 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#TTT {
+  background-image: url("../images/TTT.png");
+  background-position: 50% 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.btn {
+  margin: 20px;
+  display: inline-block;
+  height: 170px;
+  width: 170px;
+  border: 8px solid #153254;
+  background-color: #e1e8ed;
+  border-radius: 20%;
+}
+
+.btn:hover {
+  box-shadow: 0 0 20px white;
+  border: 8px solid #1c426e;
+  background-color: grey;
+}
+
+#chat {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  width: 100px;
+  height: 100px;
+  background-image: url(../images/chat.png);
+  background-position: 50% 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: 0.4s;
+}
+
+#chat:hover {
+  width: 105px;
+  height: 105px;
+}

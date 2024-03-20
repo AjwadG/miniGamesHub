@@ -7,6 +7,7 @@ import fs from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { v4 as uuidv4 } from "uuid";
+import { log } from "console";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
@@ -91,6 +92,9 @@ app.post("/chat", (req, res) => {
 app.get("/RPS", (req, res) => {
   res.render("games/RPS/game.ejs");
 });
+app.get("/TTT", (req, res) => {
+  res.render("games/TTT/game.ejs");
+});
 
 app.get("*", (req, res) => {
   res.redirect("/");
@@ -112,6 +116,21 @@ RPS.on("connection", (socket) => {
 
   socket.on("RPS_pick", (pick, gameID) => {
     socket.to(gameID).emit("RPS_pick", pick, gameID);
+  });
+});
+
+const TTT = io.of("/TTT");
+TTT.on("connection", (socket) => {
+  console.log(socket.client.server.engine.clientsCount);
+  socket.on("join_TTT", (id, callBack) => {
+    id = id ? id : uuidv4();
+    socket.join(id);
+    socket.to(id).emit("joined");
+    callBack(id);
+  });
+
+  socket.on("TTT_pick", (pick, gameID, turn) => {
+    socket.to(gameID).emit("TTT_pick", pick, gameID, turn);
   });
 });
 

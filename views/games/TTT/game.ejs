@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" mode="pve">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="styles\TTT\styles.css" />
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="mainContainer">
+      <div class="header">
+        <h3 class="player_info" id="player1_info">
+          YOU: <span id="score">0</span>
+        </h3>
+        <div>
+          <h1 class="GameName">Tic Tac Toe</h1>
+          <h2 class="Title">Witing for player</h2>
+        </div>
+        <h3 class="player_info" id="player2_info">
+          Player: <span id="score">0</span>
+        </h3>
+      </div>
+      <div class="main">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+      </div>
+      <div class="Game_ID">
+        Game ID: <span id="ID"><button>Create Game</button></span>
+        <button onclick="join()">Join game</button>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="scripts\TTT\game.js"></script>
+  </body>
+</html>

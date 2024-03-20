@@ -1,0 +1,113 @@
+/* https://colorhunt.co/palette/ffffecf1e4c3c6a969597e52 */
+body {
+  background-color: #ffffec;
+  box-sizing: border-box;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 93vb;
+}
+
+.header {
+  width: 85%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.main {
+  background-color: #597e52;
+  width: 460px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.cell {
+  background-color: #c6a969;
+  text-align: center;
+  height: 140px;
+  color: #597e52;
+  font-weight: 700;
+  font-size: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.Game_ID {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.player_info {
+  display: inline-block;
+  max-width: 80px;
+}
+
+.GameName {
+  color: #597e52;
+  margin: 10px auto 0;
+  font-size: 40px;
+  font-weight: bold;
+}
+.Title {
+  color: #c6a969;
+  margin: 10px auto 0;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.back-1 {
+  background-color: red;
+  opacity: 0.8;
+}
+
+.back1 {
+  background-color: green;
+  opacity: 0.8;
+}
+.back0 {
+  background-color: skyblue;
+  opacity: 0.8;
+}
+
+@keyframes endless1 {
+  0% {
+    top: -40px;
+    transform: rotate(0deg);
+  }
+  50% {
+    top: 40px;
+    transform: rotate(10deg);
+  }
+  100% {
+    top: -40px;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes endless2 {
+  0% {
+    top: 40px;
+    transform: rotate(0deg) scaleX(-1);
+  }
+  50% {
+    top: -40px;
+    transform: rotate(10deg) scaleX(-1);
+  }
+  100% {
+    top: 40px;
+    transform: rotate(0deg) scaleX(-1);
+  }
+}
