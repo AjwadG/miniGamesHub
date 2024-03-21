@@ -121,7 +121,7 @@ RPS.on("connection", (socket) => {
 
 const TTT = io.of("/TTT");
 TTT.on("connection", (socket) => {
-  console.log(socket.client.server.engine.clientsCount);
+  // console.log(socket.client.server.engine.clientsCount);
   socket.on("join_TTT", (id, callBack) => {
     id = id ? id : uuidv4();
     socket.join(id);
@@ -135,8 +135,8 @@ TTT.on("connection", (socket) => {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.client.server.engine.clientsCount);
-  console.log(socket.id);
+  // console.log(socket.client.server.engine.clientsCount);
+  // console.log(socket.id);
   socket.on("message", (name, message) => {
     console.log(`${name}: ${message}`);
     socket.broadcast.emit("message", { name, message });
