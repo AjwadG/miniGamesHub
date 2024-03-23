@@ -89,3 +89,19 @@ body {
   width: 105px;
   height: 105px;
 }
+
+#login {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+#login > img {
+  border-radius: 50%;
+}

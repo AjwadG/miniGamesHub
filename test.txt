@@ -1,1 +1,0 @@
-gamePatteren.forEach((item) => { $(`#${item}`).click();  });
