@@ -19,7 +19,9 @@ $(document).ready(async function () {
   function loadBoard(page, leaderBoards) {
     const index = page % leaderBoards.length;
     $("#gameName").text(leaderBoards[index].gameName);
-    const leaderBoard = leaderBoards[index].leaderBoard;
+    const leaderBoard = leaderBoards[index].leaderBoard.sort(
+      (a, b) => b.score - a.score
+    );
     for (let i = 0; i < nameFields.length; i++) {
       if (i < leaderBoard.length) {
         $(nameFields[i]).text(leaderBoard[i].userName);
