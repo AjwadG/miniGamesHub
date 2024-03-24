@@ -67,6 +67,13 @@ $(document).ready(() => {
           const player = $("#player1_info #score");
           player.text(Number(player.text()) + 1);
           background_effact(1);
+          const url = window.location.href + "/api";
+          $.ajax({
+            url,
+            type: "POST",
+            data: JSON.stringify({ score: Number(player.text()) }),
+            contentType: "application/json; charset=utf-8",
+          });
         } else {
           const player = $("#player2_info #score");
           player.text(Number(player.text()) + 1);

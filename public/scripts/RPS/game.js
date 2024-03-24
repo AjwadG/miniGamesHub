@@ -44,7 +44,7 @@ $(document).ready(() => {
     socket.emit("RPS_pick", $("#player1").attr("class"), $("#ID").text());
     $("#player1").css("animation", "none");
 
-    if ($('html').attr("mode") == "pve") {
+    if ($("html").attr("mode") == "pve") {
       load_player2_pick(Math.floor(Math.random() * 3));
     } else if (player2_pick) {
       console.log(player2_pick);
@@ -93,6 +93,13 @@ $(document).ready(() => {
         break;
       case 1:
         title.text("You Won");
+        const url = window.location.href + "/api";
+        $.ajax({
+          url,
+          type: "POST",
+          data: JSON.stringify({ score: true }),
+          contentType: "application/json; charset=utf-8",
+        });
         break;
       default:
         title.text("You Lost");
@@ -129,13 +136,13 @@ $(document).ready(() => {
       load_player2_pick(options[player2_pick] - 1);
     }
   });
-  socket.on('joined', () => {
-    $('.GameName').text('Player 2 joined')
-    $('html').attr("mode", "pvp")
+  socket.on("joined", () => {
+    $(".GameName").text("Player 2 joined");
+    $("html").attr("mode", "pvp");
     setTimeout(() => {
-      $('.GameName').text('Rock Paper Scissors')
+      $(".GameName").text("Rock Paper Scissors");
     }, 4000);
-  })
+  });
 });
 
 function join() {
@@ -143,10 +150,10 @@ function join() {
   if (id) {
     socket.emit("join_RPS", id, (room) => {
       $("#ID").text(room);
-      $('html').attr("mode", "pvp")
-      $('.GameName').text('Game joined')
+      $("html").attr("mode", "pvp");
+      $(".GameName").text("Game joined");
       setTimeout(() => {
-        $('.GameName').text('Rock Paper Scissors')
+        $(".GameName").text("Rock Paper Scissors");
       }, 4000);
     });
   }

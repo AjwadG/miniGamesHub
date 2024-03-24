@@ -23,9 +23,9 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const mongoStore  = MongoStore.create({
+const mongoStore = MongoStore.create({
   mongoUrl: process.env.DB,
-  dbName: 'miniGamesHub',
+  dbName: "miniGamesHub",
   collectionName: "sessions",
 });
 
@@ -54,6 +54,14 @@ const LeaderBoard = {
   userName: String,
   score: Number,
 };
+const games = {
+  Wordle: Number,
+  TTT: Number,
+  RPS: Number,
+  FlappyBird: Number,
+  SimonGame: Number,
+  Trivia: Number,
+};
 const Room = {
   roomName: String,
   roomID: String,
@@ -65,7 +73,11 @@ const userSchema = new mongoose.Schema({
   name: String,
   userName: String,
   password: String,
-  games: mongoose.Schema.Types.Mixed,
+  hub: {
+    type: String,
+    default: null,
+  },
+  games: games,
 });
 userSchema.plugin(passportLocalMongoose);
 
@@ -77,6 +89,7 @@ const gameSchema = new mongoose.Schema({
 });
 
 const hubSchema = new mongoose.Schema({
+  hubName: String,
   leaderBoard: [{ gameName: String, leaderBoard: [LeaderBoard] }],
   players: [{ id: String, UserName: String }],
   gamesPLayed: [String],
@@ -90,6 +103,49 @@ const Hub = mongoose.model("Hub", hubSchema);
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+async function saveScore(name, gameName, score) {
+  if (!(await Game.findOne({ gameName }))) {
+    const newGame = Game({
+      gameName,
+      leaderBoard: [],
+      rooms: [],
+      data: null,
+    });
+    newGame.save();
+  }
+  const user = await User.findOne({ name });
+  if (user.games) {
+    if (score === true) {
+      user.games[gameName] =
+        user.games[gameName] != undefined ? user.games[gameName] + 1 : 1;
+    } else {
+      user.games[gameName] =
+        user.games[gameName] == undefined || user.games[gameName] < score
+          ? score
+          : user.games[gameName];
+    }
+  } else {
+    user.games = { [gameName]: Number(score) };
+  }
+  await user.save();
+  const game = await Game.findOne({ gameName });
+  if (
+    !game.leaderBoard.find((o, i) => {
+      if (o.userName === user.username) {
+        if (o.score < user.games[gameName] || o.score == undefined)
+          o.score = user.games[gameName];
+        return true;
+      }
+    })
+  ) {
+    game.leaderBoard.push({
+      userName: user.username,
+      score: user.games[gameName],
+    });
+  }
+  game.save();
+}
 
 app.get("/", (req, res) => {
   res.render("index.ejs");
@@ -119,7 +175,7 @@ app.post("/signup", async function (req, res) {
     pass = req.body.password;
   User.register({ name: name, username: username }, pass, (err, user) => {
     if (err) res.render("forms/signup.ejs", { msg: "username already exists" });
-    else res.redirect("/");
+    else res.redirect("/login");
   });
 });
 
@@ -131,45 +187,16 @@ app.get("/leaderboard/api", async (req, res) => {
   res.json(await Game.find({}).select("gameName leaderBoard").exec());
 });
 app.get("/SimonGame", async (req, res) => {
-  if (!(await Game.findOne({ gameName: "SimonGame" }))) {
-    const simonGame = Game({
-      gameName: "SimonGame",
-      leaderBoard: [
-        {
-          userName: "AjwadG",
-          score: 10,
-        },
-      ],
-      rooms: [],
-      data: null,
-    });
-    simonGame.save();
-  }
   res.render("games/SimonGame.ejs");
 });
 
-app.post("/SimonGame", (req, res) => {
+app.post("/SimonGame", async (req, res) => {
+  if (req.isAuthenticated())
+    await saveScore(req.user.name, "SimonGame", req.body.level);
+
   res.send(req.body);
 });
 app.get("/Wordle", async (req, res) => {
-  if (!(await Game.findOne({ gameName: "Wordle" }))) {
-    const Wordle = Game({
-      gameName: "Wordle",
-      leaderBoard: [
-        {
-          userName: "AjwadG",
-          score: 10,
-        },
-        {
-          userName: "Ahmad",
-          score: 20,
-        },
-      ],
-      rooms: [],
-      data: null,
-    });
-    Wordle.save();
-  }
   // console.log(req.originalUrl);
   res.render("games/Wordle/home.ejs");
 });
@@ -180,10 +207,7 @@ app.get("/Wordle_:wordLenght", (req, res) => {
   const number = Math.floor(Math.random() * 1000);
   res.render("games/Wordle/game.ejs", { lenght: wordLenght, number });
 });
-app.post("/Wordle_:wordLenght", (req, res) => {
-  if (req.isAuthenticated()) {
-    const a = req;
-  }
+app.post("/Wordle_:wordLenght", async (req, res) => {
   const { lenght, number, guess, row } = req.body;
   if (!lenght || lenght < 5 || lenght > 8 || number < 0 || number > 1000)
     return res.send([]);
@@ -208,6 +232,9 @@ app.post("/Wordle_:wordLenght", (req, res) => {
     correct.push(state);
   }
   let data = { correct, won: word == guess };
+  if (req.isAuthenticated()) {
+    await saveScore(req.user.name, "Wordle", true);
+  }
   if (lenght == row) data.word = word;
   res.send(data);
 });
@@ -221,8 +248,22 @@ app.post("/Trivia", (req, res) => {
   res.render("games/Trivia/game.ejs", { category, difficulty, type, token });
 });
 
+app.post("/Trivia/api", async (req, res) => {
+  if (req.isAuthenticated()) {
+    await saveScore(req.user.name, "Trivia", req.body.score);
+  }
+  res.json("added");
+});
+
 app.get("/FlappyBird", (req, res) => {
   res.render("games/FlappyBird/home.ejs", {});
+});
+
+app.post("/FlappyBird/api", async (req, res) => {
+  if (req.isAuthenticated()) {
+    await saveScore(req.user.name, "FlappyBird", req.body.score);
+  }
+  res.json("added");
 });
 
 app.get("/chat", async (req, res) => {
@@ -237,8 +278,21 @@ app.post("/chat", (req, res) => {
 app.get("/RPS", (req, res) => {
   res.render("games/RPS/game.ejs");
 });
+app.post("/RPS/api", async (req, res) => {
+  if (req.isAuthenticated()) {
+    await saveScore(req.user.name, "RPS", req.body.score);
+  }
+  res.json("added");
+});
+
 app.get("/TTT", (req, res) => {
   res.render("games/TTT/game.ejs");
+});
+app.post("/TTT/api", async (req, res) => {
+  if (req.isAuthenticated()) {
+    await saveScore(req.user.name, "TTT", req.body.score);
+  }
+  res.json("added");
 });
 
 app.get("*", (req, res) => {
@@ -263,7 +317,7 @@ RPS.use((socket, next) => {
 });
 
 RPS.on("connection", (socket) => {
-  console.log(socket.client.server.engine.clientsCount);
+  // console.log(socket.client.server.engine.clientsCount);
   socket.on("join_RPS", (id, callBack) => {
     id = id ? id : uuidv4();
     socket.join(id);
