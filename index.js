@@ -90,10 +90,12 @@ const gameSchema = new mongoose.Schema({
 
 const hubSchema = new mongoose.Schema({
   hubName: String,
+  hubCode: String,
   leaderBoard: [{ gameName: String, leaderBoard: [LeaderBoard] }],
-  players: [{ id: String, UserName: String }],
+  players: [String],
   gamesPLayed: [String],
   queue: [String],
+  maxPlayers: Number,
 });
 
 const User = mongoose.model("User", userSchema);
@@ -129,6 +131,7 @@ async function saveScore(name, gameName, score) {
     user.games = { [gameName]: Number(score) };
   }
   await user.save();
+  console.log(user.hub);
   const game = await Game.findOne({ gameName });
   if (
     !game.leaderBoard.find((o, i) => {
@@ -148,7 +151,75 @@ async function saveScore(name, gameName, score) {
 }
 
 app.get("/", (req, res) => {
-  res.render("index.ejs");
+  res.render("index.ejs", { auth: req.isAuthenticated() });
+});
+
+app.get("/room", async (req, res) => {
+  if (
+    req.isAuthenticated() &&
+    req.user.hub &&
+    (await Hub.findOne({ hubCode: req.user.hub }))
+  ) {
+    return res.send("<h1> we made it </h1>");
+  }
+  res.send("<h1> not yet </h1>");
+});
+
+app.get("/rooms", (req, res) => {
+  if (req.isAuthenticated()) return res.render("rooms.ejs", { type: 0 });
+  res.redirect("/");
+});
+app.post("/rooms", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.render("rooms.ejs", { type: req.body.type });
+  } else res.redirect("/");
+});
+
+app.post("/rooms/api/join", async (req, res) => {
+  if (req.isAuthenticated()) {
+    await Hub.updateMany(
+      { players: req.user.name },
+      { $pull: { players: req.user.name } }
+    );
+    const hub = await Hub.findOne({ hubCode: req.body.hubCode });
+    if (hub && hub.maxPlayers > hub.players.length) {
+      await User.findOneAndUpdate(
+        { username: req.user.username },
+        { $set: { hub: req.body.hubCode } }
+      );
+      hub.players.push(req.user.name);
+      await hub.save();
+      await Hub.deleteMany({ $or: [{ players: [] }, { players: null }] });
+    }
+    return res.json(true);
+  } else res.status(404).json(false);
+});
+
+app.post("/rooms/api/create", async (req, res) => {
+  const name = req.body.hubName;
+  if (req.isAuthenticated()) {
+    await Hub.updateMany(
+      { players: req.user.name },
+      { $pull: { players: req.user.name } }
+    );
+    const hubcode = uuidv4();
+    const hub = Hub({
+      hubName: name,
+      hubCode: hubcode,
+      leaderBoard: [],
+      players: [req.user.name],
+      gamesPLayed: [],
+      queue: [],
+      maxPlayers: Number(req.body.max),
+    });
+    hub.save();
+    await User.findOneAndUpdate(
+      { username: req.user.username },
+      { $set: { hub: hubcode } }
+    );
+    await Hub.deleteMany({ $or: [{ players: [] }, { players: null }] });
+    return res.json(true);
+  } else res.status(404).json(false);
 });
 
 app.get("/login", async (req, res) => {
@@ -165,6 +236,16 @@ app.post(
     res.render("forms/login.ejs", { msg: "wrong username or passoword" });
   }
 );
+
+app.get("/logout", function (req, res) {
+  req.logout(function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.redirect("/");
+    }
+  });
+});
 app.get("/signup", async (req, res) => {
   if (req.isAuthenticated()) return res.redirect("/");
   res.render("forms/signup.ejs");
@@ -232,7 +313,7 @@ app.post("/Wordle_:wordLenght", async (req, res) => {
     correct.push(state);
   }
   let data = { correct, won: word == guess };
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && word == guess) {
     await saveScore(req.user.name, "Wordle", true);
   }
   if (lenght == row) data.word = word;
@@ -293,6 +374,10 @@ app.post("/TTT/api", async (req, res) => {
     await saveScore(req.user.name, "TTT", req.body.score);
   }
   res.json("added");
+});
+
+app.get("/dino", (req, res) => {
+  res.render("games/dino/game.ejs");
 });
 
 app.get("*", (req, res) => {

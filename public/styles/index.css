@@ -105,3 +105,19 @@ body {
 #login > img {
   border-radius: 50%;
 }
+
+#room {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+#room > img {
+  border-radius: 50%;
+}

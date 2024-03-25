@@ -15,7 +15,20 @@
 
   <body>
     <h1 id="level-title">MiniGamesHub</h1>
-    <a id="login" href="/login">Login <img src="/images/Login-Icon.png" width="50px"></a>
+    <% if (locals.auth) { %>
+    <a id="login" href="/logout"
+      >LogOut <img src="/images/Login-Icon.png" width="50px"
+    /></a>
+    <a id="room" href="/rooms"
+      ><img src="/images/room.png" width="50px" />Rooms
+    </a>
+
+    <% } else {%>
+    <a id="login" href="/login"
+      >Login <img src="/images/Login-Icon.png" width="50px"
+    /></a>
+    <% }%>
+
     <a href="/chat"><div id="chat"></div></a>
     <div class="container">
       <a href="/SimonGame"><div id="SimonGame" class="btn"></div></a>
@@ -29,6 +42,8 @@
       <a href="/RPS"><div id="RPS" class="btn"></div></a>
 
       <a href="/TTT"><div id="TTT" class="btn"></div></a>
+
+      <a href="/dino"><div id="dino" class="btn"></div></a>
     </div>
   </body>
 </html>
