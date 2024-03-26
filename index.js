@@ -53,6 +53,10 @@ mongoose.connect(process.env.DB);
 const LeaderBoard = {
   userName: String,
   score: Number,
+  tries: {
+    type: String,
+    default: 3,
+  }
 };
 const games = {
   Wordle: Number,
@@ -86,6 +90,7 @@ const gameSchema = new mongoose.Schema({
   leaderBoard: [LeaderBoard],
   rooms: [Room],
   data: mongoose.Schema.Types.Mixed,
+  maxPlayers: Number,
 });
 
 const hubSchema = new mongoose.Schema({
@@ -160,18 +165,18 @@ app.get("/room", async (req, res) => {
     req.user.hub &&
     (await Hub.findOne({ hubCode: req.user.hub }))
   ) {
-    return res.send("<h1> we made it </h1>");
+    return res.render("rooms/room.ejs", { hubCode: req.user.hub });
   }
-  res.send("<h1> not yet </h1>");
+  res.redirect("/rooms");
 });
 
 app.get("/rooms", (req, res) => {
-  if (req.isAuthenticated()) return res.render("rooms.ejs", { type: 0 });
+  if (req.isAuthenticated()) return res.render("rooms/rooms.ejs", { type: 0 });
   res.redirect("/");
 });
 app.post("/rooms", (req, res) => {
   if (req.isAuthenticated()) {
-    return res.render("rooms.ejs", { type: req.body.type });
+    return res.render("rooms/rooms.ejs", { type: req.body.type });
   } else res.redirect("/");
 });
 
@@ -203,13 +208,14 @@ app.post("/rooms/api/create", async (req, res) => {
       { $pull: { players: req.user.name } }
     );
     const hubcode = uuidv4();
+    const queue = (await Game.find({ maxPlayers: 1 })).map((a) => a.gameName);
     const hub = Hub({
       hubName: name,
       hubCode: hubcode,
       leaderBoard: [],
       players: [req.user.name],
       gamesPLayed: [],
-      queue: [],
+      queue: queue,
       maxPlayers: Number(req.body.max),
     });
     hub.save();
@@ -316,7 +322,12 @@ app.post("/Wordle_:wordLenght", async (req, res) => {
   if (req.isAuthenticated() && word == guess) {
     await saveScore(req.user.name, "Wordle", true);
   }
-  if (lenght == row) data.word = word;
+  if (lenght == row) {
+    if (req.user.hub) {
+      
+    }
+    data.word = word
+  };
   res.send(data);
 });
 
