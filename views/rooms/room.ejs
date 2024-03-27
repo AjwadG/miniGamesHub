@@ -6,6 +6,7 @@
     <title>MiniGamesGub</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
     <link rel="stylesheet" href="styles\index.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Press+Start+2P"
@@ -16,20 +17,14 @@
   <body>
     <h1 id="level-title">MiniGamesHub</h1>
     <h2>HubCode: <%= hubCode %></h2>
+    <h3 id="level-title" style="font-size: 20px; margin: 2px auto">
+      Next Game
+    </h3>
+    <div id="room">Players left: <span id="left"></span></div>
+    <div id="login">Players not Ready: <span id="ready"></span></div>
     <div class="container">
-      <a href="/SimonGame"><div id="SimonGame" class="btn"></div></a>
-
-      <a href="/Wordle"><div id="Wordle" class="btn"></div></a>
-
-      <a href="/Trivia"><div id="Trivia" class="btn"></div></a>
-
-      <a href="/FlappyBird"><div id="FlappyBird" class="btn"></div></a>
-
-      <a href="/RPS"><div id="RPS" class="btn"></div></a>
-
-      <a href="/TTT"><div id="TTT" class="btn"></div></a>
-
-      <a href="/dino"><div id="dino" class="btn"></div></a>
+      <div id="<%= next %>" class="btn"></div>
     </div>
+    <script src="scripts\rooms\room.js"></script>
   </body>
 </html>

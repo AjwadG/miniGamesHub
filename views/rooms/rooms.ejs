@@ -26,6 +26,9 @@
       <div id="create">
         <button type="submit" name="type" value="2">Create Room</button>
       </div>
+      <% if (locals.member ) { %>
+      <div id="old"><a href="/room"> Your hub </a></div>
+      <% } %>
     </form>
     <% } else if (locals.type == 1) {%>
     <div id="second">
@@ -46,7 +49,6 @@
     </div>
     <% } %>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="scripts\rooms.js"></script>
+    <script src="scripts\rooms\rooms.js"></script>
   </body>
 </html>

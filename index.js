@@ -56,7 +56,7 @@ const LeaderBoard = {
   tries: {
     type: String,
     default: 3,
-  }
+  },
 };
 const games = {
   Wordle: Number,
@@ -97,6 +97,10 @@ const hubSchema = new mongoose.Schema({
   hubName: String,
   hubCode: String,
   leaderBoard: [{ gameName: String, leaderBoard: [LeaderBoard] }],
+  started: {
+    type: Boolean,
+    default: false,
+  },
   players: [String],
   gamesPLayed: [String],
   queue: [String],
@@ -136,7 +140,6 @@ async function saveScore(name, gameName, score) {
     user.games = { [gameName]: Number(score) };
   }
   await user.save();
-  console.log(user.hub);
   const game = await Game.findOne({ gameName });
   if (
     !game.leaderBoard.find((o, i) => {
@@ -160,24 +163,80 @@ app.get("/", (req, res) => {
 });
 
 app.get("/room", async (req, res) => {
-  if (
-    req.isAuthenticated() &&
-    req.user.hub &&
-    (await Hub.findOne({ hubCode: req.user.hub }))
-  ) {
-    return res.render("rooms/room.ejs", { hubCode: req.user.hub });
+  if (req.isAuthenticated() && req.user.hub) {
+    const hub = await Hub.findOne({ hubCode: req.user.hub });
+    if (hub) {
+      if (!hub.queue[0])
+        return res.render("LeaderBoard.ejs", { hub: hub.hubName });
+      return res.render("rooms/room.ejs", {
+        hubCode: req.user.hub,
+        full: hub.maxPlayers == hub.players.length,
+        next: hub.queue[0],
+      });
+    }
   }
   res.redirect("/rooms");
 });
+app.post("/room", async (req, res) => {
+  if (req.isAuthenticated() && req.user.hub) {
+    const hub = await Hub.findOne({ hubCode: req.user.hub });
+    if (hub) return res.json(hub);
+  }
+  res.json(false);
+});
+app.get("/room/api", async (req, res) => {
+  if (req.isAuthenticated() && req.user.hub) {
+    const hub = await Hub.findOne({ hubCode: req.user.hub });
+    if (hub) return res.json(hub.leaderBoard);
+  }
+  res.json(false);
+});
 
-app.get("/rooms", (req, res) => {
-  if (req.isAuthenticated()) return res.render("rooms/rooms.ejs", { type: 0 });
+app.get("/rooms", async (req, res) => {
+  if (req.isAuthenticated()) {
+    const hub = await Hub.findOne({ hubCode: req.user.hub });
+    return res.render("rooms/rooms.ejs", { type: 0, member: hub != null });
+  }
   res.redirect("/");
 });
 app.post("/rooms", (req, res) => {
   if (req.isAuthenticated()) {
     return res.render("rooms/rooms.ejs", { type: req.body.type });
   } else res.redirect("/");
+});
+
+app.post("/hub", async (req, res) => {
+  const { score, gameName } = req.body;
+  if (req.isAuthenticated()) {
+    const hub = await Hub.findOne({
+      hubCode: req.user.hub,
+      players: req.user.name,
+    });
+    if (hub) {
+      const game = hub.leaderBoard.filter(
+        (element) => element.gameName == gameName
+      )[0].leaderBoard;
+      const index = game.findIndex(
+        (element) => element.userName == req.user.name
+      );
+      if (index != -1) {
+        const record = game[index];
+        if (score == true) record.score++;
+        else record.score = record.score < score ? score : record.score;
+        if (record.tries > 0) {
+          record.tries--;
+        }
+        return res.json(record.tries <= 0);
+      }
+      return res.json(false);
+    }
+    await User.findOneAndUpdate(
+      { username: req.user.username },
+      { $set: { hub: null } }
+    );
+    return res.json(false);
+  }
+  res.json(false);
 });
 
 app.post("/rooms/api/join", async (req, res) => {
@@ -324,10 +383,9 @@ app.post("/Wordle_:wordLenght", async (req, res) => {
   }
   if (lenght == row) {
     if (req.user.hub) {
-      
     }
-    data.word = word
-  };
+    data.word = word;
+  }
   res.send(data);
 });
 
@@ -401,6 +459,7 @@ server.listen(process.env.PORT, () => {
 
 const TTT = io.of("/TTT");
 const RPS = io.of("/RPS");
+const room = io.of("/room");
 
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
@@ -410,6 +469,70 @@ TTT.use((socket, next) => {
 });
 RPS.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
+});
+room.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next);
+});
+
+room.on("connection", async (socket) => {
+  const user = await isAuthenticated(socket.request.session);
+  const hub = await Hub.findOne({ hubCode: user.hub });
+  socket.join(user.hub);
+  if (
+    hub.leaderBoard.filter((game) => game.gameName === hub.queue[0]).length == 0
+  ) {
+    hub.leaderBoard.push({ gameName: hub.queue[0], leaderBoard: [] });
+  }
+  const index = hub.leaderBoard.findIndex(
+    (element) => element.gameName === hub.queue[0]
+  );
+  if (index != -1) {
+    const i = hub.leaderBoard[index].leaderBoard.findIndex(
+      (element) => element.userName === user.name
+    );
+    if (i == -1) {
+      hub.leaderBoard[index].leaderBoard.push({
+        userName: user.name,
+        score: 0,
+      });
+    }
+    await hub.save();
+  }
+  room.to(user.hub).emit("player_joined", user.name);
+
+  socket.on("disconnect", async () => {
+    const hub = await Hub.findOne({ hubCode: user.hub });
+    socket.leave(user.hub);
+    if (!hub.started) {
+      let index = hub.leaderBoard.findIndex(
+        (element) => element.gameName === hub.queue[0]
+      );
+      if (index !== -1) {
+        const i = hub.leaderBoard[index].leaderBoard.findIndex(
+          (element) => element.userName === user.name
+        );
+        if (i !== -1) hub.leaderBoard[index].leaderBoard.splice(i, 1);
+      }
+      hub.save();
+    }
+  });
+
+  socket.on("start_game", async () => {
+    const hub = await Hub.findOne({ hubCode: user.hub });
+    const index = hub.leaderBoard.findIndex(
+      (element) => element.gameName === hub.queue[0]
+    );
+    if (
+      index != -1 &&
+      hub.maxPlayers == hub.leaderBoard[index].leaderBoard.length
+    ) {
+      hub.started = true;
+      hub.gamesPLayed.push(hub.queue[0]);
+      hub.queue.splice(0, 1);
+      hub.save();
+      room.to(user.hub).emit("start", user.name);
+    }
+  });
 });
 
 RPS.on("connection", (socket) => {
@@ -426,9 +549,11 @@ RPS.on("connection", (socket) => {
   });
 });
 
-function isAuthenticated(session) {
+async function isAuthenticated(session) {
   if (session && session.passport && session.passport.user)
-    return session.passport.user;
+    return await User.findOne({ username: session.passport.user })
+      .select("name hub username")
+      .exec();
   else false;
 }
 TTT.on("connection", (socket) => {

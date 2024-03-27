@@ -4,89 +4,95 @@ var randomChosenColur;
 var userClickedPattern = [];
 var level = 1;
 
-$(document).on("keydown", function(e) {
-    if (level == 1){
-        nextSequence();
-    }
-})
+$(document).on("keydown", function (e) {
+  if (level == 1) {
+    nextSequence();
+  }
+});
 
 function nextSequence() {
+  $("#level-title").text("Level " + level++);
 
-    $("#level-title").text("Level "+ level++);
+  randomChosenColur = buttonColors[Math.floor(Math.random() * 4)];
 
-   randomChosenColur = buttonColors[Math.floor(Math.random() * 4)];
+  gamePatteren.push(randomChosenColur);
 
-   gamePatteren.push(randomChosenColur);
+  $("#" + randomChosenColur)
+    .fadeOut(100)
+    .fadeIn(100);
 
-   $("#"+ randomChosenColur).fadeOut(100).fadeIn(100);
-
-   playSound(randomChosenColur);
-
+  playSound(randomChosenColur);
 }
 
+$(".btn").on("click", function () {
+  userClickedPattern.push(this.id);
 
-$(".btn").on("click", function() {
+  $(this).addClass("pressed");
+  setTimeout(() => {
+    $(this).removeClass("pressed");
+  }, 100);
 
-    userClickedPattern.push(this.id)
+  playSound(this.id);
 
-    $(this).addClass("pressed");
-    setTimeout(() => {
-        $(this).removeClass("pressed");
-    }, 100);
+  var index = userClickedPattern.length - 1;
 
-    playSound(this.id);
-
-    var index = userClickedPattern.length - 1;
-
-    if (gamePatteren[index] == userClickedPattern[index]){
-        if(gamePatteren.length == userClickedPattern.length){
-            setTimeout(() => {
-                nextSequence();
-            }, 1000);
-            userClickedPattern = [];
-        }
-    } else {
-
-        gameOver()
-
-        startOver()
-
+  if (gamePatteren[index] == userClickedPattern[index]) {
+    if (gamePatteren.length == userClickedPattern.length) {
+      setTimeout(() => {
+        nextSequence();
+      }, 1000);
+      userClickedPattern = [];
     }
-} );
+  } else {
+    gameOver();
 
+    startOver();
+  }
+});
 
 function playSound(color) {
-
-    var audio = new Audio("sounds/SimonGame/"+ color +".mp3");
-    audio.play();
-
+  var audio = new Audio("sounds/SimonGame/" + color + ".mp3");
+  audio.play();
 }
 
 function gameOver() {
+  playSound("wrong");
 
-    playSound("wrong");
+  $("#level-title").text("Game Over, Press A to Restart");
 
-    $("#level-title").text("Game Over, Press A to Restart");
+  $("body").addClass("game-over");
 
-    $("body").addClass("game-over");
-
-    setTimeout(() => {
-        $("body").removeClass("game-over");
-    }, 200);
+  setTimeout(() => {
+    $("body").removeClass("game-over");
+  }, 200);
 }
 
 function startOver() {
-    const url = window.location.href;
-    if (gamePatteren.length != 0) {
-        $.ajax({ url, type: 'POST', data: JSON.stringify({ level }), contentType: 'application/json; charset=utf-8' }).done((data) => {
-            const bestScore = Number($('#HighScore').attr('level'));
-            if (bestScore < data.level) {
-                const bestScore = $('#HighScore').attr('level', data.level);
-                $('#HighScore').text(`Best Score: ${data.level}`);
-            }
-        })
-    }
-    gamePatteren.length = [];
-    userClickedPattern = [];
-    level = 1;
+  const url = window.location.href;
+  if (gamePatteren.length != 0) {
+    $.ajax({
+      url,
+      type: "POST",
+      data: JSON.stringify({ level }),
+      contentType: "application/json; charset=utf-8",
+    }).done((data) => {
+      const bestScore = Number($("#HighScore").attr("level"));
+      if (bestScore < data.level) {
+        const bestScore = $("#HighScore").attr("level", data.level);
+        $("#HighScore").text(`Best Score: ${data.level}`);
+      }
+    });
+    const gameName = window.location.pathname.split("/")[1];
+    $.ajax({
+      url: "/hub",
+      type: "POST",
+      data: JSON.stringify({ score: level, gameName }),
+      contentType: "application/json; charset=utf-8",
+    }).done((data) => {
+      if (data) window.location.replace("/room");
+    });
+  }
+  gamePatteren.length = [];
+  userClickedPattern = [];
+  level = 1;
 }
