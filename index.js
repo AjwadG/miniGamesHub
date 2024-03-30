@@ -13,6 +13,7 @@ import passport from "passport";
 import passportLocalMongoose from "passport-local-mongoose";
 import MongoStore from "connect-mongo";
 import { setTimeout } from "timers/promises";
+import { checkPrime } from "crypto";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -98,9 +99,9 @@ const hubSchema = new mongoose.Schema({
   hubName: String,
   hubCode: String,
   leaderBoard: [{ gameName: String, leaderBoard: [LeaderBoard] }],
-  started: {
-    type: Boolean,
-    default: false,
+  state: {
+    type: String,
+    default: "wating",
   },
   currentGame: {
     type: String,
@@ -171,8 +172,13 @@ app.get("/room", async (req, res) => {
   if (req.isAuthenticated() && req.user.hub) {
     const hub = await Hub.findOne({ hubCode: req.user.hub });
     if (hub) {
-      if (!hub.queue[0])
+      if (!hub.queue[0]) {
+        if (cheackGames(hub)) {
+          hub.state = "done";
+          await hub.save();
+        }
         return res.render("LeaderBoard.ejs", { hub: hub.hubName });
+      }
       return res.render("rooms/room.ejs", {
         hubCode: req.user.hub,
         full: hub.maxPlayers == hub.players.length,
@@ -218,6 +224,7 @@ app.post("/hub", async (req, res) => {
       players: req.user.name,
     });
     if (hub) {
+      if (hub.state == "done") return false;
       const game = hub.leaderBoard.filter(
         (element) => element.gameName == gameName
       )[0].leaderBoard;
@@ -485,7 +492,7 @@ function cheackGames(hub, name) {
     for (let j = 0; j < games[i].leaderBoard.length; j++) {
       if (
         Number(games[i].leaderBoard[j].tries) > 0 &&
-        games[i].leaderBoard[j].userName == name
+        (games[i].leaderBoard[j].userName == name || name == undefined)
       )
         return false;
     }
@@ -526,7 +533,7 @@ room.on("connection", async (socket) => {
   socket.on("disconnect", async () => {
     const hub = await Hub.findOne({ hubCode: user.hub });
     socket.leave(user.hub);
-    if (!hub.started) {
+    if (hub.state == "wating") {
       let index = hub.leaderBoard.findIndex(
         (element) => element.gameName === hub.queue[0]
       );
@@ -550,7 +557,7 @@ room.on("connection", async (socket) => {
       index != -1 &&
       hub.maxPlayers == hub.leaderBoard[index].leaderBoard.length
     ) {
-      hub.started = true;
+      hub.state = "started";
       hub.gamesPLayed.push(hub.queue[0]);
       hub.currentGame = hub.queue[0];
       hub.queue.splice(0, 1);
