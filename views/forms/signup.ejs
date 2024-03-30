@@ -19,16 +19,16 @@
       <form method="post" style="width: 350px" action="/signup">
         <h1 class="h1 mb-5 mt-3">SignUp</h1>
         <div class="form-floating">
-            <input
-              type="text"
-              name="name"
-              class="form-control top"
-              placeholder="name"
-              required
-              autofocus
-            />
-            <label>Name</label>
-          </div>
+          <input
+            type="text"
+            name="name"
+            class="form-control top"
+            placeholder="name"
+            required
+            autofocus
+          />
+          <label>Name</label>
+        </div>
         <div class="form-floating">
           <input
             type="text"
@@ -40,7 +40,7 @@
           />
           <label>User Name</label>
         </div>
-        
+
         <div class="form-floating">
           <input
             type="text"
@@ -58,8 +58,8 @@
         </button>
         <p class="mt-4 mb-1 text-body-secondary">©AjwadElgandouz</p>
         <% if (locals.msg) {%>
-          <h4 style="color: rgb(210, 29, 29)"><%= msg %></h4>
-          <% }%>
+        <h4 style="color: rgb(210, 29, 29)"><%= msg %></h4>
+        <% }%>
       </form>
     </main>
   </body>

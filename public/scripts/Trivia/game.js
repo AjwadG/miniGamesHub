@@ -37,7 +37,6 @@ async function get_question() {
         $(self.target).addClass("correct");
         right.play();
         score++;
-
         const url = window.location.href + "/api";
         $.ajax({
           url,
@@ -48,6 +47,15 @@ async function get_question() {
       } else {
         $(self.target).addClass("wrong");
         wrong.play();
+        const gameName = window.location.pathname.split("/")[1];
+        $.ajax({
+          url: "/hub",
+          type: "POST",
+          data: JSON.stringify({ score, gameName }),
+          contentType: "application/json; charset=utf-8",
+        }).done((data) => {
+          if (data) window.location.replace("/room");
+        });
       }
 
       $("#Streak").text(score);

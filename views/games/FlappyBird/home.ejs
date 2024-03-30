@@ -1,31 +1,67 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" lenght="<%= locals.lenght %>" number="<%= locals.number %>">
+<html
+  lang="en"
+  dir="ltr"
+  lenght="<%= locals.lenght %>"
+  number="<%= locals.number %>"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>FlappyBird</title>
-  <link rel="stylesheet" href="styles\FlappyBird\styles.css">
-  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-</head>
+    <title>FlappyBird</title>
+    <link rel="stylesheet" href="styles\FlappyBird\styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
-  <h2 id="HighScore" level="0"></h2>
-  <div class="title">
-  <h1 id="level-title">FlappyBird</h1>
-  </div>
-  <div id="bird"> </div>
-  <div class="bird1" style="width: 0;"></div>
-  <img src="images\FlappyBird\pipe.png" width="150" class="pipe_bottom pipe" alt="">
-  <img src="images\FlappyBird\pipe.png" width="150" class="pipe_top pipe " alt="">
-  <img src="images\FlappyBird\pipe.png" width="150" class="pipe_bottom pipe" alt="">
-  <img src="images\FlappyBird\pipe.png" width="150" class="pipe_top pipe" alt="">
-  <img src="images\FlappyBird\pipe.png" width="150" class="pipe_bottom pipe" alt="">
-  <img src="images\FlappyBird\pipe.png" width="150" class="pipe_top pipe" alt="">
+  <body>
+    <h2 id="HighScore" level="0"></h2>
+    <div class="title">
+      <h1 id="level-title">FlappyBird</h1>
+    </div>
+    <div id="bird"></div>
+    <div class="bird1" style="width: 0"></div>
+    <img
+      src="images\FlappyBird\pipe.png"
+      width="150"
+      class="pipe_bottom pipe"
+      alt=""
+    />
+    <img
+      src="images\FlappyBird\pipe.png"
+      width="150"
+      class="pipe_top pipe"
+      alt=""
+    />
+    <img
+      src="images\FlappyBird\pipe.png"
+      width="150"
+      class="pipe_bottom pipe"
+      alt=""
+    />
+    <img
+      src="images\FlappyBird\pipe.png"
+      width="150"
+      class="pipe_top pipe"
+      alt=""
+    />
+    <img
+      src="images\FlappyBird\pipe.png"
+      width="150"
+      class="pipe_bottom pipe"
+      alt=""
+    />
+    <img
+      src="images\FlappyBird\pipe.png"
+      width="150"
+      class="pipe_top pipe"
+      alt=""
+    />
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-  <script src="scripts\FlappyBird\index.js"></script>
-</body>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="scripts\FlappyBird\index.js"></script>
+  </body>
 </html>

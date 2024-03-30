@@ -12,6 +12,7 @@ import session from "express-session";
 import passport from "passport";
 import passportLocalMongoose from "passport-local-mongoose";
 import MongoStore from "connect-mongo";
+import { setTimeout } from "timers/promises";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -100,6 +101,10 @@ const hubSchema = new mongoose.Schema({
   started: {
     type: Boolean,
     default: false,
+  },
+  currentGame: {
+    type: String,
+    default: "room",
   },
   players: [String],
   gamesPLayed: [String],
@@ -226,6 +231,7 @@ app.post("/hub", async (req, res) => {
         if (record.tries > 0) {
           record.tries--;
         }
+        await hub.save();
         return res.json(record.tries <= 0);
       }
       return res.json(false);
@@ -366,11 +372,11 @@ app.post("/Wordle_:wordLenght", async (req, res) => {
   for (let i = 0; i < lenght; i++) {
     let state = 0;
     if (word[i] == guess[i]) {
-      state = 1;
+      state = 2;
     } else {
       for (let j = 0; j < lenght; j++) {
         if (guess[i] == word[j]) {
-          state = 2;
+          state = 1;
           break;
         }
       }
@@ -382,8 +388,6 @@ app.post("/Wordle_:wordLenght", async (req, res) => {
     await saveScore(req.user.name, "Wordle", true);
   }
   if (lenght == row) {
-    if (req.user.hub) {
-    }
     data.word = word;
   }
   res.send(data);
@@ -474,31 +478,50 @@ room.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
 });
 
+function cheackGames(hub, name) {
+  const played = hub.gamesPLayed.length;
+  const games = hub.leaderBoard;
+  for (let i = 0; i < played; i++) {
+    for (let j = 0; j < games[i].leaderBoard.length; j++) {
+      if (
+        Number(games[i].leaderBoard[j].tries) > 0 &&
+        games[i].leaderBoard[j].userName == name
+      )
+        return false;
+    }
+  }
+  return true;
+}
 room.on("connection", async (socket) => {
   const user = await isAuthenticated(socket.request.session);
   const hub = await Hub.findOne({ hubCode: user.hub });
-  socket.join(user.hub);
-  if (
-    hub.leaderBoard.filter((game) => game.gameName === hub.queue[0]).length == 0
-  ) {
-    hub.leaderBoard.push({ gameName: hub.queue[0], leaderBoard: [] });
-  }
-  const index = hub.leaderBoard.findIndex(
-    (element) => element.gameName === hub.queue[0]
-  );
-  if (index != -1) {
-    const i = hub.leaderBoard[index].leaderBoard.findIndex(
-      (element) => element.userName === user.name
-    );
-    if (i == -1) {
-      hub.leaderBoard[index].leaderBoard.push({
-        userName: user.name,
-        score: 0,
-      });
+  if (cheackGames(hub, user.name)) {
+    socket.join(user.hub);
+    if (
+      hub.leaderBoard.filter((game) => game.gameName === hub.queue[0]).length ==
+      0
+    ) {
+      hub.leaderBoard.push({ gameName: hub.queue[0], leaderBoard: [] });
     }
-    await hub.save();
+    const index = hub.leaderBoard.findIndex(
+      (element) => element.gameName === hub.queue[0]
+    );
+    if (index != -1) {
+      const i = hub.leaderBoard[index].leaderBoard.findIndex(
+        (element) => element.userName === user.name
+      );
+      if (i == -1) {
+        hub.leaderBoard[index].leaderBoard.push({
+          userName: user.name,
+          score: 0,
+        });
+      }
+      await hub.save();
+    }
+    room.to(user.hub).emit("player_joined", user.name);
+  } else {
+    socket.emit("returnToGame", hub.currentGame);
   }
-  room.to(user.hub).emit("player_joined", user.name);
 
   socket.on("disconnect", async () => {
     const hub = await Hub.findOne({ hubCode: user.hub });
@@ -514,6 +537,7 @@ room.on("connection", async (socket) => {
         if (i !== -1) hub.leaderBoard[index].leaderBoard.splice(i, 1);
       }
       hub.save();
+      room.to(user.hub).emit("player_joined", user.name);
     }
   });
 
@@ -528,6 +552,7 @@ room.on("connection", async (socket) => {
     ) {
       hub.started = true;
       hub.gamesPLayed.push(hub.queue[0]);
+      hub.currentGame = hub.queue[0];
       hub.queue.splice(0, 1);
       hub.save();
       room.to(user.hub).emit("start", user.name);

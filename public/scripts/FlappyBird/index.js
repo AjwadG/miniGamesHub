@@ -149,6 +149,15 @@ function startOver(animation, game) {
     data: JSON.stringify({ score }),
     contentType: "application/json; charset=utf-8",
   });
+  const gameName = window.location.pathname.split("/")[1];
+  $.ajax({
+    url: "/hub",
+    type: "POST",
+    data: JSON.stringify({ score, gameName }),
+    contentType: "application/json; charset=utf-8",
+  }).done((data) => {
+    if (data) window.location.replace("/room");
+  });
   if (Number($("#HighScore").attr("level")) < score) {
     const bestScore = $("#HighScore").attr("level", score);
     $("#HighScore").text(`Best Score: ${score}`);

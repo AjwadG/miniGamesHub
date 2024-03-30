@@ -1,4 +1,4 @@
-let Colors = ["red", "green", "yellow"];
+let Colors = ["red", "yellow", "green"];
 let row = 0;
 let col = 0;
 const lenght = Number($("html").attr("lenght"));
@@ -36,13 +36,28 @@ function check() {
       word = [];
       col = 0;
       row++;
-      if (data.won)
-        if (data.left != undefined) {
-          won(data.left);
-        } else {
-          won();
-        }
-      else if (row == lenght + 1) gameOver(data.word);
+      const gameName = "Wordle";
+      if (data.won || row == lenght + 1) {
+        let score = list.reduce(
+          (accumulator, currentValue) => accumulator + currentValue,
+          row - (lenght + 1)
+        );
+        $.ajax({
+          url: "/hub",
+          type: "POST",
+          data: JSON.stringify({ score, gameName }),
+          contentType: "application/json; charset=utf-8",
+        }).done((data) => {
+          if (data) {
+            setInterval(() => {
+              window.location.replace("/room");
+            }, 4000);
+          }
+        });
+      }
+      if (data.won) {
+        won();
+      } else if (row == lenght + 1) gameOver(data.word);
       else new Audio(`sounds/Wordle/${Colors[row % 3]}.mp3`).play();
     });
   }
@@ -79,7 +94,7 @@ function gameOver(word) {
   }, 1000);
 }
 
-function won(left) {
+function won() {
   new Audio("sounds/Wordle/won.mp3").play();
 
   const title = $("#level-title");
@@ -102,8 +117,7 @@ function won(left) {
         setTimeout(() => {
           title.text("YOU WON, BACK TO HOME in 1");
           setTimeout(() => {
-            if (left != undefined && left != 0) location.replace(location.href);
-            else location.replace(home);
+            location.replace(home);
           }, 1000);
         }, 1000);
       }, 1000);
