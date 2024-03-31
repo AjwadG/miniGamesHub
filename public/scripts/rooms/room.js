@@ -1,7 +1,8 @@
 const socket = io(window.location.href);
 $(document).ready(async function () {
   socket.on("start", (name) => {
-    const nextGame = `${window.location.origin}/${$(".btn").attr("id")}`;
+    const nextGame = `${window.location.origin}/${$(".gameIcon").attr("id")}`;
+    console.log(nextGame);
     location.replace(nextGame);
   });
   socket.on("returnToGame", (game) => {

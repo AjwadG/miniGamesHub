@@ -50,25 +50,26 @@ function check() {
       if (data.won || row == lenght + 1) {
         let score = list.reduce(
           (accumulator, currentValue) => accumulator + currentValue,
-          row - (lenght + 1)
+          lenght + 1 - row
         );
+        console.log(score);
         $.ajax({
           url: "/hub",
           type: "POST",
           data: JSON.stringify({ score, gameName }),
           contentType: "application/json; charset=utf-8",
-        }).done((data) => {
-          if (data) {
+        }).done((done) => {
+          if (done) {
             setTimeout(() => {
               window.location.replace("/room");
             }, 3000);
           }
+          if (data.won) {
+            won();
+          } else if (row == lenght + 1) gameOver(data.word);
+          else new Audio(`sounds/Wordle/${Colors[row % 3]}.mp3`).play();
         });
       }
-      if (data.won) {
-        won();
-      } else if (row == lenght + 1) gameOver(data.word);
-      else new Audio(`sounds/Wordle/${Colors[row % 3]}.mp3`).play();
     });
   }
 }

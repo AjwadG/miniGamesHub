@@ -227,10 +227,12 @@ app.post("/hub", async (req, res) => {
       players: req.user.name,
     });
     if (hub && hub.state == "started") {
-      if (hub.state == "done") return false;
-      const game = hub.leaderBoard.filter(
+      if (hub.state == "done") return res.json(false);
+      let game = hub.leaderBoard.filter(
         (element) => element.gameName == gameName
-      )[0].leaderBoard;
+      )[0];
+      if (game) game = game.leaderBoard;
+      else return res.json(false);
       const index = game.findIndex(
         (element) => element.userName == req.user.name
       );

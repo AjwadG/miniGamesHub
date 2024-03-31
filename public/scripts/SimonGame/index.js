@@ -65,7 +65,6 @@ function gameOver() {
 
   setTimeout(() => {
     $("body").removeClass("game-over");
-    startGame();
   }, 200);
 }
 
