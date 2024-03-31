@@ -24,6 +24,16 @@ async function get_question() {
     options.forEach((option) => {
       $(".options").append(`<div class="option">${option}</div>`);
     });
+    let height = 33;
+    let elements = $(".option");
+    elements.each((i, element) => {
+      if ($(element).height() > height) height = $(element).height();
+      if (i % 2 == 1) {
+        $(elements[i]).height(height);
+        $(elements[i - 1]).height(height);
+        height = 33;
+      }
+    });
 
     $(".option").on("click", (self) => {
       $(".option").each((i, tag) => {

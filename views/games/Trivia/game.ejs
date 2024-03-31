@@ -12,6 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Trivia Quiz Game</title>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link rel="stylesheet" href="styles\chat.css" />
     <link rel="stylesheet" href="styles\Trivia\styles.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Press+Start+2P"
@@ -20,10 +22,11 @@
   </head>
 
   <body>
+    <%- include("../../Chat/chat"); -%>
     <div class="score">Correct answers: <span id="Streak">0</span></div>
     <div class="mainContainer">
-      <div class="formRaber">
-        <span class="GameName">Loading ..</span>
+      <div class="formRaber game">
+        <span class="GameName question">Loading ..</span>
         <span class="Title">Select The Right answer</span>
         <div class="options"></div>
       </div>

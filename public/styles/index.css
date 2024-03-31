@@ -3,15 +3,15 @@ body {
   background-color: #bbc4cb;
 }
 
-#level-title,
+#main-title,
 #HighScore {
   font-family: "Press Start 2P", cursive;
   font-size: 2.5rem;
-  margin: 5%;
+  margin: 4.5%;
   color: #001b38;
 }
 
-.container {
+.game_container {
   display: block;
   max-width: 900px;
   margin: auto;
@@ -56,40 +56,6 @@ body {
   background-repeat: no-repeat;
 }
 
-.btn {
-  margin: 20px;
-  display: inline-block;
-  height: 170px;
-  width: 170px;
-  border: 8px solid #153254;
-  background-color: #e1e8ed;
-  border-radius: 20%;
-}
-
-.btn:hover {
-  box-shadow: 0 0 20px white;
-  border: 8px solid #1c426e;
-  background-color: grey;
-}
-
-#chat {
-  position: absolute;
-  right: 15px;
-  bottom: 15px;
-  width: 100px;
-  height: 100px;
-  background-image: url(../images/chat.png);
-  background-position: 50% 50%;
-  background-size: contain;
-  background-repeat: no-repeat;
-  transition: 0.4s;
-}
-
-#chat:hover {
-  width: 105px;
-  height: 105px;
-}
-
 #login {
   position: absolute;
   right: 15px;
@@ -120,4 +86,20 @@ body {
 
 #room > img {
   border-radius: 50%;
+}
+
+.gameIcon {
+  margin: 20px;
+  display: inline-block;
+  height: 190px;
+  width: 190px;
+  border: 8px solid #153254;
+  background-color: #e1e8ed;
+  border-radius: 20%;
+}
+
+.gameIcon:hover {
+  box-shadow: 0 0 20px white;
+  border: 8px solid #1c426e;
+  background-color: grey;
 }

@@ -167,6 +167,9 @@ async function saveScore(name, gameName, score) {
 app.get("/", (req, res) => {
   res.render("index.ejs", { auth: req.isAuthenticated() });
 });
+app.get("/home", (req, res) => {
+  res.render("test.ejs");
+});
 
 app.get("/room", async (req, res) => {
   if (req.isAuthenticated() && req.user.hub) {
@@ -223,7 +226,7 @@ app.post("/hub", async (req, res) => {
       hubCode: req.user.hub,
       players: req.user.name,
     });
-    if (hub) {
+    if (hub && hub.state == "started") {
       if (hub.state == "done") return false;
       const game = hub.leaderBoard.filter(
         (element) => element.gameName == gameName
@@ -427,15 +430,6 @@ app.post("/FlappyBird/api", async (req, res) => {
   res.json("added");
 });
 
-app.get("/chat", async (req, res) => {
-  if (req.isAuthenticated())
-    return res.render("Chat/chat.ejs", { name: req.user.name });
-  res.render("Chat/home.ejs");
-});
-app.post("/chat", (req, res) => {
-  res.render("Chat/chat.ejs", { name: req.body.name });
-});
-
 app.get("/RPS", (req, res) => {
   res.render("games/RPS/game.ejs");
 });
@@ -586,14 +580,9 @@ async function isAuthenticated(session) {
     return await User.findOne({ username: session.passport.user })
       .select("name hub username")
       .exec();
-  else false;
+  else return false;
 }
-TTT.on("connection", (socket) => {
-  // console.log(socket.client.server.engine.clientsCount);
-  const user = isAuthenticated(socket.request.session);
-  if (user) {
-    console.log("User connected:", user);
-  }
+TTT.on("connection", async (socket) => {
   socket.on("join_TTT", (id, callBack) => {
     id = id ? id : uuidv4();
     socket.join(id);
@@ -606,10 +595,16 @@ TTT.on("connection", (socket) => {
   });
 });
 
-io.on("connection", (socket) => {
-  // console.log(socket.client.server.engine.clientsCount);
-  // console.log(socket.id);
-  socket.on("message", (name, message) => {
-    socket.broadcast.emit("message", { name, message });
+io.on("connection", async (socket) => {
+  let room = socket.handshake.headers.referer;
+  let user = await isAuthenticated(socket.request.session);
+  let name = "Guest";
+  if (user) {
+    name = user.name;
+    if (user.hub) room = user.hub;
+  }
+  socket.join(room);
+  socket.on("message", (message) => {
+    socket.to(room).emit("message", { name, message });
   });
 });

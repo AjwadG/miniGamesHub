@@ -3,12 +3,7 @@ var gamePatteren = [];
 var randomChosenColur;
 var userClickedPattern = [];
 var level = 1;
-
-$(document).on("keydown", function (e) {
-  if (level == 1) {
-    nextSequence();
-  }
-});
+var gamestarted = false;
 
 function nextSequence() {
   $("#level-title").text("Level " + level++);
@@ -24,31 +19,36 @@ function nextSequence() {
   playSound(randomChosenColur);
 }
 
-$(".btn").on("click", function () {
-  userClickedPattern.push(this.id);
+function startGame(element) {
+  if (gamestarted) {
+    userClickedPattern.push(element.id);
 
-  $(this).addClass("pressed");
-  setTimeout(() => {
-    $(this).removeClass("pressed");
-  }, 100);
+    $(element).addClass("pressed");
+    setTimeout(() => {
+      $(element).removeClass("pressed");
+    }, 100);
 
-  playSound(this.id);
+    playSound(element.id);
 
-  var index = userClickedPattern.length - 1;
+    var index = userClickedPattern.length - 1;
 
-  if (gamePatteren[index] == userClickedPattern[index]) {
-    if (gamePatteren.length == userClickedPattern.length) {
-      setTimeout(() => {
-        nextSequence();
-      }, 1000);
-      userClickedPattern = [];
+    if (gamePatteren[index] == userClickedPattern[index]) {
+      if (gamePatteren.length == userClickedPattern.length) {
+        setTimeout(() => {
+          nextSequence();
+        }, 1000);
+        userClickedPattern = [];
+      }
+    } else {
+      gameOver();
+
+      startOver();
     }
   } else {
-    gameOver();
-
-    startOver();
+    gamestarted = true;
+    nextSequence();
   }
-});
+}
 
 function playSound(color) {
   var audio = new Audio("sounds/SimonGame/" + color + ".mp3");
@@ -56,14 +56,16 @@ function playSound(color) {
 }
 
 function gameOver() {
+  $(".btn").off("click");
   playSound("wrong");
 
-  $("#level-title").text("Game Over, Press A to Restart");
+  $("#level-title").text("Game Over, Press any button to start");
 
   $("body").addClass("game-over");
 
   setTimeout(() => {
     $("body").removeClass("game-over");
+    startGame();
   }, 200);
 }
 
@@ -95,4 +97,5 @@ function startOver() {
   gamePatteren.length = [];
   userClickedPattern = [];
   level = 1;
+  gamestarted = false;
 }

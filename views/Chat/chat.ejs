@@ -1,95 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
-    <title>Global Chat</title>
-    <style>
-      body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 95vh;
-      }
-      div,
-      button {
-        padding: 10px;
-      }
-      #chatBox {
-        min-width: 400px;
-        max-width: 80%;
-        border: 2px solid black;
-        border-radius: 15px;
-        padding: 20px;
-      }
-      #chat {
-        height: 400px;
-        border: 1px solid black;
-        border-radius: 15px;
-        margin-bottom: 5px;
-        background-color: azure;
-        overflow: auto;
-      }
-      #text {
-        width: 72%;
-        border-radius: 15px;
-        height: 30px;
-        padding: 5px;
-      }
-      button {
-        width: 20%;
-        font-size: 15px;
-        border-radius: 15px;
-        margin-left: 3px;
-      }
-      .in {
-        background-color: rgb(147, 227, 239);
-        border-radius: 5px;
-        margin-bottom: 2px;
-        font-size: 20px;
-      }
-      .out {
-        background-color: rgb(153, 147, 239);
-        border-radius: 5px;
-        margin-bottom: 2px;
-        font-size: 20px;
-      }
-    </style>
-  </head>
-  <body name="<%= name %>">
-    <div id="chatBox">
-      <div id="chat"></div>
-      <input type="text" id="text" />
-      <button onclick="sendMessage()">Send</button>
-    </div>
+<input type="checkbox" id="chat_check" />
+<label class="chat-btn" for="chat_check">
+  <i class="comment">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="30"
+      height="30"
+      fill="currentColor"
+      class="bi bi-chat-dots"
+      viewBox="0 0 16 16"
+    >
+      <path
+        d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"
+      />
+      <path
+        d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9 9 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.4 10.4 0 0 1-.524 2.318l-.003.011a11 11 0 0 1-.244.637c-.079.186.074.394.273.362a22 22 0 0 0 .693-.125m.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6-3.004 6-7 6a8 8 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a11 11 0 0 0 .398-2"
+      />
+    </svg>
+  </i>
+  <i class="close">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="30"
+      height="30"
+      fill="currentColor"
+      class="bi bi-x-lg"
+      viewBox="0 0 16 16"
+    >
+      <path
+        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"
+      />
+    </svg>
+  </i>
+</label>
+<div class="wrapper">
+  <div class="chat_header"><h6>Global Chat</h6></div>
+  <div id="chat"></div>
+  <div class="chat-form">
+    <input
+      type="text"
+      id="text"
+      class="form-control"
+      placeholder="your message"
+    />
+  </div>
+</div>
+<script>
+  document.getElementById("text").addEventListener("keypress", (event) => {
+    if (event.key == "Enter") {
+      sendMessage();
+    }
+  });
+  const chat = io("/");
 
-    <script>
-      const socket = io(window.location.origin);
-      const name = document.querySelector("body").getAttribute("name");
-      socket.on("connect", () => {
-        console.log("connection was made with id " + socket.id);
-      });
+  function sendMessage() {
+    const message = document.getElementById("text").value;
+    if (message == "") {
+      return;
+    }
+    const div = document.createElement("div");
+    div.innerHTML = `<b>YOU</b> : ${message}`;
+    div.classList.add("chat_out");
+    document.getElementById("chat").appendChild(div);
 
-      function sendMessage() {
-        const message = document.getElementById("text").value;
-        if (message == "") {
-          return;
-        }
-        const div = document.createElement("div");
-        div.innerHTML = `<b>YOU</b> : ${message}`;
-        div.classList.add("out");
-        document.getElementById("chat").appendChild(div);
-
-        document.getElementById("text").value = "";
-        socket.emit("message", name, message);
-      }
-      socket.on("message", (data) => {
-        const div = document.createElement("div");
-        div.innerHTML = `<b>${data.name}</b> : ${data.message}`;
-        div.classList.add("in");
-        document.getElementById("chat").appendChild(div);
-      });
-    </script>
-  </body>
-</html>
+    document.getElementById("text").value = "";
+    chat.emit("message", message);
+  }
+  chat.on("message", (data) => {
+    const div = document.createElement("div");
+    div.innerHTML = `${data.message} : <b>${data.name}</b>`;
+    div.classList.add("chat_in");
+    document.getElementById("chat").appendChild(div);
+  });
+</script>

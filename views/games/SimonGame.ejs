@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>SimonGame</title>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link rel="stylesheet" href="styles\chat.css" />
     <link rel="stylesheet" href="styles\SimonGame\styles.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Press+Start+2P"
@@ -13,18 +15,19 @@
   </head>
 
   <body>
+    <%- include("../Chat/chat"); -%>
     <h2 id="HighScore" level="0"></h2>
-    <h1 id="level-title">Press Any Key to Start</h1>
+    <h1 id="level-title">Press Any button to start</h1>
     <div class="container">
       <div class="row">
-        <div type="button" id="green" class="btn green"></div>
+        <div id="green" onclick="startGame(this)" class="btn green"></div>
 
-        <div type="button" id="red" class="btn red"></div>
+        <div id="red" onclick="startGame(this)" class="btn red"></div>
       </div>
 
       <div class="row">
-        <div type="button" id="yellow" class="btn yellow"></div>
-        <div type="button" id="blue" class="btn blue"></div>
+        <div id="yellow" onclick="startGame(this)" class="btn yellow"></div>
+        <div id="blue" onclick="startGame(this)" class="btn blue"></div>
       </div>
     </div>
 

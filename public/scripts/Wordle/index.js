@@ -5,7 +5,17 @@ const lenght = Number($("html").attr("lenght"));
 const number = Number($("html").attr("number"));
 let word = [];
 
-$(document).on("keydown", function (e) {
+$(document).on("keydown", gameStart);
+
+$("#chat_check").change(function () {
+  if ($(this).is(":checked")) {
+    $(document).off("keydown");
+  } else {
+    $(document).on("keydown", gameStart);
+  }
+});
+
+function gameStart(e) {
   const key = e.key.toUpperCase();
   if (key == "ENTER" && col == lenght) {
     col++;
@@ -18,7 +28,7 @@ $(document).on("keydown", function (e) {
     $(`.row-${row} .col-${col++}`).text(key[0]);
     word.push(key[0]);
   }
-});
+}
 
 function check() {
   const url = window.location.href;
@@ -49,9 +59,9 @@ function check() {
           contentType: "application/json; charset=utf-8",
         }).done((data) => {
           if (data) {
-            setInterval(() => {
+            setTimeout(() => {
               window.location.replace("/room");
-            }, 4000);
+            }, 3000);
           }
         });
       }

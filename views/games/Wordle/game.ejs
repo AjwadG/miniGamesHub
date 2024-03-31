@@ -10,6 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Wordle</title>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link rel="stylesheet" href="styles\chat.css" />
+    
     <link rel="stylesheet" href="styles\Wordle\styles.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Press+Start+2P"
@@ -18,19 +21,23 @@
   </head>
 
   <body>
+    <%- include("../../Chat/chat"); -%>
     <h2 id="level-title">
       You have <%= lenght + 1 %> tries <br />
       to guess the <%= lenght %> letters word
     </h2>
     <div class="container">
+      
       <% for (let i = 0; i <= locals.lenght; i ++) { %>
       <div class="row-<%= i %>">
+        <input class="hidden" type="text" id="">
         <% for (let j = 0; j < locals.lenght; j ++) { %>
         <div class="col-<%= j %> btn"></div>
         <% } %>
       </div>
       <% } %>
     </div>
+    
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="scripts\Wordle\index.js"></script>

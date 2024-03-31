@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Rock Paper Scissors</title>
-    <link rel="stylesheet" href="styles\RPS\styles.css" />
     <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link rel="stylesheet" href="styles\chat.css" />
+
+    <link rel="stylesheet" href="styles\RPS\styles.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Press+Start+2P"
       rel="stylesheet"
@@ -14,6 +16,7 @@
   </head>
 
   <body>
+    <%- include("../../Chat/chat"); -%>
     <div class="mainContainer">
       <div class="header">
         <h3 class="player_info" id="player1_info">YOU: picking</h3>
