@@ -165,7 +165,7 @@ async function saveScore(name, gameName, score) {
 }
 
 app.get("/", (req, res) => {
-  res.render("index.ejs", { auth: req.isAuthenticated() });
+  res.render("pages/index.ejs", { auth: req.isAuthenticated() });
 });
 app.get("/home", (req, res) => {
   res.render("test.ejs");
