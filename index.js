@@ -167,6 +167,13 @@ async function saveScore(name, gameName, score) {
 app.get("/", (req, res) => {
   res.render("pages/index.ejs", { auth: req.isAuthenticated() });
 });
+app.get("/Games", (req, res) => {
+  res.render("pages/Games.ejs", { auth: req.isAuthenticated() });
+});
+app.get("/hubs", (req, res) => {
+  res.render("pages/hubs.ejs", { auth: req.isAuthenticated() });
+}); 
+
 app.get("/home", (req, res) => {
   res.render("test.ejs");
 });
@@ -344,7 +351,7 @@ app.post("/signup", async function (req, res) {
 });
 
 app.get("/leaderboard", (req, res) => {
-  res.render("LeaderBoard.ejs");
+  res.render("pages/LeaderBoard.ejs", { auth: req.isAuthenticated() });
 });
 
 app.get("/leaderboard/api", async (req, res) => {
