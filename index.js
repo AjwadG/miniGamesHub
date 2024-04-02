@@ -170,9 +170,26 @@ app.get("/", (req, res) => {
 app.get("/Games", (req, res) => {
   res.render("pages/Games.ejs", { auth: req.isAuthenticated() });
 });
-app.get("/hubs", (req, res) => {
-  res.render("pages/hubs.ejs", { auth: req.isAuthenticated() });
-}); 
+
+app.get("/hubs", async (req, res) => {
+  if (req.isAuthenticated()) {
+    const hub = await Hub.findOne({ hubCode: req.user.hub });
+    return res.render("pages/hubs.ejs", {
+      auth: req.isAuthenticated(),
+      type: 0,
+      member: hub != null ? 4 : 6,
+    });
+  }
+  res.redirect("/");
+});
+app.post("/hubs", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.render("pages/hubs.ejs", {
+      auth: req.isAuthenticated(),
+      type: req.body.type,
+    });
+  } else res.redirect("/");
+});
 
 app.get("/home", (req, res) => {
   res.render("test.ejs");
@@ -264,7 +281,7 @@ app.post("/hub", async (req, res) => {
   res.json(false);
 });
 
-app.post("/rooms/api/join", async (req, res) => {
+app.post("/hubs/api/join", async (req, res) => {
   if (req.isAuthenticated()) {
     await Hub.updateMany(
       { players: req.user.name },
@@ -284,9 +301,9 @@ app.post("/rooms/api/join", async (req, res) => {
   } else res.status(404).json(false);
 });
 
-app.post("/rooms/api/create", async (req, res) => {
-  const name = req.body.hubName;
+app.post("/hubs/api/create", async (req, res) => {
   if (req.isAuthenticated()) {
+    const name = req.user.name;
     await Hub.updateMany(
       { players: req.user.name },
       { $pull: { players: req.user.name } }

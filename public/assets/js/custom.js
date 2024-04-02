@@ -50,14 +50,14 @@
     },
   });
 
-  var width = $(window).width();
-  $(window).resize(function () {
-    if (width > 992 && $(window).width() < 992) {
-      location.reload();
-    } else if (width < 992 && $(window).width() > 992) {
-      location.reload();
-    }
-  });
+  // var width = $(window).width();
+  // $(window).resize(function () {
+  //   if (width > 992 && $(window).width() < 992) {
+  //     location.reload();
+  //   } else if (width < 992 && $(window).width() > 992) {
+  //     location.reload();
+  //   }
+  // });
 
   $(document).on("click", ".naccs .menu div", function () {
     var numberIndex = $(this).index();

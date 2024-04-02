@@ -1,0 +1,93 @@
+.gamepad-container {
+  width: 100%;
+  height: 250px;
+  display: flex;
+}
+
+.fa-gamepad {
+  flex-grow: 1;
+  font-size: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 300ms;
+  animation: show 300ms ease forwards;
+  transition: 300ms ease;
+  box-shadow: 10px 0 5px #000000ad;
+  color: #fff;
+}
+
+.fa-gamepad:first-of-type {
+  background-color: blueviolet;
+}
+
+.fa-gamepad:nth-of-type(2) {
+  background-color: blue;
+}
+
+.fa-gamepad:nth-of-type(3) {
+  background-color: green;
+}
+
+.fa-gamepad:nth-of-type(4) {
+  background-color: orange;
+}
+
+.fa-gamepad:nth-of-type(5) {
+  background-color: red;
+}
+
+.counter-container {
+  padding: 25px;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.counter-container > h3 {
+  color: black;
+}
+
+.counter {
+  font-size: 25px;
+}
+
+.counter i {
+  cursor: pointer;
+  margin: 0 8px;
+}
+.number_of_players {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 8px #0000006c;
+  overflow: hidden;
+}
+.counter-container > h3 {
+  width: 50%;
+}
+
+@keyframes show {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes toHide {
+  0% {
+    width: 100%;
+  }
+
+  100% {
+    width: 0%;
+  }
+}
+
+.hide {
+  overflow: hidden;
+  animation: toHide 300ms ease forwards;
+}
