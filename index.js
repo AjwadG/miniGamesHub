@@ -12,8 +12,6 @@ import session from "express-session";
 import passport from "passport";
 import passportLocalMongoose from "passport-local-mongoose";
 import MongoStore from "connect-mongo";
-import { setTimeout } from "timers/promises";
-import { checkPrime } from "crypto";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -164,6 +162,9 @@ async function saveScore(name, gameName, score) {
   game.save();
 }
 
+app.get("/forms", (req, res) => {
+  res.render("pages/forms.ejs", { login: true });
+});
 app.get("/", (req, res) => {
   res.render("pages/index.ejs", { auth: req.isAuthenticated() });
 });
@@ -195,7 +196,7 @@ app.get("/home", (req, res) => {
   res.render("test.ejs");
 });
 
-app.get("/room", async (req, res) => {
+app.get("/hub", async (req, res) => {
   if (req.isAuthenticated() && req.user.hub) {
     const hub = await Hub.findOne({ hubCode: req.user.hub });
     if (hub) {
@@ -204,43 +205,28 @@ app.get("/room", async (req, res) => {
           hub.state = "done";
           await hub.save();
         }
-        return res.render("LeaderBoard.ejs", { hub: hub.hubName });
+        return res.render("pages/LeaderBoard.ejs", {
+          auth: req.isAuthenticated(),
+          hub: hub.hubName,
+        });
       }
-      return res.render("rooms/room.ejs", {
+      return res.render("pages/hub.ejs", {
+        auth: req.isAuthenticated(),
         hubCode: req.user.hub,
         full: hub.maxPlayers == hub.players.length,
         next: hub.queue[0],
       });
     }
   }
-  res.redirect("/rooms");
+  res.redirect("/hubs");
 });
-app.post("/room", async (req, res) => {
+
+app.post("/hub/state", async (req, res) => {
   if (req.isAuthenticated() && req.user.hub) {
     const hub = await Hub.findOne({ hubCode: req.user.hub });
     if (hub) return res.json(hub);
   }
   res.json(false);
-});
-app.get("/room/api", async (req, res) => {
-  if (req.isAuthenticated() && req.user.hub) {
-    const hub = await Hub.findOne({ hubCode: req.user.hub });
-    if (hub) return res.json(hub.leaderBoard);
-  }
-  res.json(false);
-});
-
-app.get("/rooms", async (req, res) => {
-  if (req.isAuthenticated()) {
-    const hub = await Hub.findOne({ hubCode: req.user.hub });
-    return res.render("rooms/rooms.ejs", { type: 0, member: hub != null });
-  }
-  res.redirect("/");
-});
-app.post("/rooms", (req, res) => {
-  if (req.isAuthenticated()) {
-    return res.render("rooms/rooms.ejs", { type: req.body.type });
-  } else res.redirect("/");
 });
 
 app.post("/hub", async (req, res) => {
@@ -296,9 +282,10 @@ app.post("/hubs/api/join", async (req, res) => {
       hub.players.push(req.user.name);
       await hub.save();
       await Hub.deleteMany({ $or: [{ players: [] }, { players: null }] });
+      return res.json(true);
     }
-    return res.json(true);
-  } else res.status(404).json(false);
+  }
+  return res.json(false);
 });
 
 app.post("/hubs/api/create", async (req, res) => {
@@ -331,7 +318,7 @@ app.post("/hubs/api/create", async (req, res) => {
 
 app.get("/login", async (req, res) => {
   if (req.isAuthenticated()) return res.redirect("/");
-  res.render("forms/login.ejs");
+  res.render("pages/forms.ejs", { login: true });
 });
 app.post(
   "/login",
@@ -340,7 +327,10 @@ app.post(
     failWithError: true,
   }),
   function (err, req, res, next) {
-    res.render("forms/login.ejs", { msg: "wrong username or passoword" });
+    res.render("pages/forms.ejs", {
+      login: true,
+      msg: "wrong username or passoword",
+    });
   }
 );
 
@@ -355,14 +345,14 @@ app.get("/logout", function (req, res) {
 });
 app.get("/signup", async (req, res) => {
   if (req.isAuthenticated()) return res.redirect("/");
-  res.render("forms/signup.ejs");
+  res.render("pages/forms.ejs");
 });
 app.post("/signup", async function (req, res) {
   let name = req.body.name,
     username = req.body.username,
     pass = req.body.password;
   User.register({ name: name, username: username }, pass, (err, user) => {
-    if (err) res.render("forms/signup.ejs", { msg: "username already exists" });
+    if (err) res.render("pages/forms.ejs", { msg: "username already exists" });
     else res.redirect("/login");
   });
 });
@@ -385,7 +375,6 @@ app.post("/SimonGame", async (req, res) => {
   res.send(req.body);
 });
 app.get("/Wordle", async (req, res) => {
-  // console.log(req.originalUrl);
   res.render("games/Wordle/home.ejs");
 });
 
@@ -400,7 +389,7 @@ app.post("/Wordle_:wordLenght", async (req, res) => {
   if (!lenght || lenght < 5 || lenght > 8 || number < 0 || number > 1000)
     return res.send([]);
   const word = fs
-    .readFileSync(__dirname + `/tmp/Wordle/${lenght}.txt`)
+    .readFileSync(__dirname + `/words/Wordle/${lenght}.txt`)
     .toString()
     .split("\n")
     [number].toUpperCase();
@@ -476,10 +465,6 @@ app.post("/TTT/api", async (req, res) => {
   res.json("added");
 });
 
-app.get("/dino", (req, res) => {
-  res.render("games/dino/game.ejs");
-});
-
 app.get("*", (req, res) => {
   res.redirect("/");
 });
@@ -490,7 +475,7 @@ server.listen(process.env.PORT, () => {
 
 const TTT = io.of("/TTT");
 const RPS = io.of("/RPS");
-const room = io.of("/room");
+const room = io.of("/hub");
 
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
@@ -588,7 +573,6 @@ room.on("connection", async (socket) => {
 });
 
 RPS.on("connection", (socket) => {
-  // console.log(socket.client.server.engine.clientsCount);
   socket.on("join_RPS", (id, callBack) => {
     id = id ? id : uuidv4();
     socket.join(id);
