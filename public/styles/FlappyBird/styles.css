@@ -1,7 +1,7 @@
 body {
   background-color: antiquewhite;
   height: 95vh;
-  width: 100vw;
+  width: 100%;
   overflow: hidden;
 }
 * {
@@ -47,6 +47,8 @@ body {
   font-family: "Press Start 2P", cursive;
   font-size: 4rem;
   color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
 }
 
 #HighScore {
