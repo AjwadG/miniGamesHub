@@ -168,6 +168,9 @@ app.get("/forms", (req, res) => {
 app.get("/", (req, res) => {
   res.render("pages/index.ejs", { auth: req.isAuthenticated() });
 });
+app.get("/about", (req, res) => {
+  res.render("pages/about.ejs", { auth: req.isAuthenticated() });
+});
 app.get("/Games", (req, res) => {
   res.render("pages/Games.ejs", { auth: req.isAuthenticated() });
 });
