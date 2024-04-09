@@ -11,6 +11,7 @@
 
     <title>Wordle</title>
     <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link rel="icon" type="image/png" href="images/favicon.png" />
     <link rel="stylesheet" href="styles\chat.css" />
 
     <link rel="stylesheet" href="styles\Wordle\styles.css" />
@@ -21,8 +22,8 @@
   </head>
 
   <body>
-    <%- include("../../Overlay/chat"); -%>
-    <%- include("../../Overlay/back"); -%>
+    <%- include("../../Overlay/chat"); -%> <%- include("../../Overlay/back");
+    -%>
     <h2 id="level-title">
       You have <%= lenght + 1 %> tries <br />
       to guess the <%= lenght %> letters word
