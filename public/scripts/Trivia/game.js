@@ -64,7 +64,7 @@ async function get_question() {
           data: JSON.stringify({ score, gameName }),
           contentType: "application/json; charset=utf-8",
         }).done((data) => {
-          if (data) window.location.replace("/room");
+          if (data) window.location.replace("/hub");
         });
       }
 

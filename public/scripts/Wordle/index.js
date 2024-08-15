@@ -61,7 +61,7 @@ function check() {
         }).done((done) => {
           if (done) {
             setTimeout(() => {
-              window.location.replace("/room");
+              window.location.replace("/hub");
             }, 3000);
           }
           if (data.won) {
